@@ -112,11 +112,23 @@ function character() {
 
 function bigTable(x) {
   fill(73, 55, 76);
-  rect(296, 403, 334, 80);
+  rect(296, 413, 250, 70);
   rect(323, 483, 16, 60);
   rect(365, 483, 16, 40);
-  rect(541, 483, 16, 60);
-  rect(588, 483, 16, 40);
+  rect(463, 483, 16, 60);
+  rect(503, 483, 16, 40);
+
+  beginShape();
+  fill(255);
+  vertex(336, 427);
+  vertex(320, 440);
+  vertex(336, 454);
+  vertex(353, 440);
+  endShape(CLOSE);
+
+  line(336, 433, 327, 440);
+  line(340, 435, 330, 443);
+  line(344, 438, 334, 446);
 }
 
 //chair
