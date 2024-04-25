@@ -1,6 +1,23 @@
+let lavaX = 0;
+let bigTables = [];
+
 function setup() {
   createCanvas(700, 600);
+  // Define width and height variables here
+  let width = 700;
+  let height = 600;
+
   background(234, 200, 135);
+
+  // Create big tables
+  for (let i = 0; i < 1; i++) {
+    const bigTable = {
+      x: Math.floor(Math.random() * width),
+      y: Math.floor(Math.random() * height),
+      alpha: Math.random(),
+    };
+    bigTables.push(bigTable);
+  }
 }
 
 function windows(x) {
@@ -64,24 +81,39 @@ function shelf(x, y) {
 }
 
 function lava() {
-  fill(223, 61, 40);
-  rect(0, 450, 740, 150);
+  let lavaWidth = 740;
+  let lavaFlows = 2;
 
-  //wavy surface
-  push();
-  beginShape();
-  stroke(224, 99, 30);
-  strokeWeight(2);
-  vertex(101, 451);
-  bezierVertex(203, 450, 153, 408, 259, 440);
-  bezierVertex(321, 451, 309, 426, 389, 442);
-  bezierVertex(450, 423, 432, 448, 533, 451);
-  bezierVertex(575, 450, 557, 428, 609, 442);
-  bezierVertex(651, 451, 707, 435, 740, 451);
+  for (let i = 0; i < lavaFlows; i++) {
+    let x = i * lavaWidth - lavaX;
 
-  vertex(740, 451);
-  endShape();
-  pop();
+    push();
+    stroke(223, 61, 40);
+    fill(223, 61, 40);
+    rect(x, 450, lavaWidth, 150);
+
+    // wavy surface
+    push();
+    beginShape();
+    stroke(224, 99, 30);
+    strokeWeight(2);
+    vertex(x + 101, 451);
+    bezierVertex(x + 203, 450, x + 153, 408, x + 259, 440);
+    bezierVertex(x + 321, 451, x + 309, 426, x + 389, 442);
+    bezierVertex(x + 450, 423, x + 432, 448, x + 533, 451);
+    bezierVertex(x + 575, 450, x + 557, 428, x + 609, 442);
+    bezierVertex(x + 651, 451, x + 707, 435, x + 740, 451);
+    vertex(x + 740, 451);
+    endShape();
+    pop();
+    pop();
+  }
+
+  lavaX += 5;
+
+  if (lavaX > 740) {
+    lavaX = 0;
+  }
 }
 
 function startGround() {
@@ -110,43 +142,64 @@ function character() {
   triangle(53, 391, 60, 419, 70, 391);
 }
 
-function bigTable(x) {
+function drawBigTable(x, y) {
   fill(73, 55, 76);
-  rect(296, 413, 250, 70);
-  rect(323, 483, 16, 60);
-  rect(365, 483, 16, 40);
-  rect(463, 483, 16, 60);
-  rect(503, 483, 16, 40);
+  rect(x, y, 250, 70);
+  rect(x + 27, y + 70, 16, 60);
+  rect(x + 69, y + 70, 16, 40);
+  rect(x + 167, y + 70, 16, 60);
+  rect(x + 207, y + 70, 16, 40);
 
   beginShape();
   fill(255);
-  vertex(336, 427);
-  vertex(320, 440);
-  vertex(336, 454);
-  vertex(353, 440);
+  vertex(x + 37, y + 14);
+  vertex(x + 21, y + 27);
+  vertex(x + 37, y + 41);
+  vertex(x + 54, y + 27);
   endShape(CLOSE);
 
-  line(336, 433, 327, 440);
-  line(340, 435, 330, 443);
-  line(344, 438, 334, 446);
+  line(x + 37, y + 20, x + 28, y + 27);
+  line(x + 41, y + 22, x + 31, y + 30);
+  line(x + 45, y + 25, x + 35, y + 33);
 }
 
-//chair
-/*function chair(){
-fill(136, 136, 136);
-ellipse(672,472,90,40);
-ellipse(671,535,114,40);
-push();
-fill(0);
-rect(656,491,6,24);
-rect(685,491,6,24);
-rect(642,553,6,38);
-rect(656,554,6,26);
-rect(685,554,6,26);
-rect(699,552,6,38);
+// function bigTable(x) {
+//   fill(73, 55, 76);
+//   rect(296, 413, 250, 70);
+//   rect(323, 483, 16, 60);
+//   rect(365, 483, 16, 40);
+//   rect(463, 483, 16, 60);
+//   rect(503, 483, 16, 40);
 
-pop();
-}*/
+//   beginShape();
+//   fill(255);
+//   vertex(336, 427);
+//   vertex(320, 440);
+//   vertex(336, 454);
+//   vertex(353, 440);
+//   endShape(CLOSE);
+
+//   line(336, 433, 327, 440);
+//   line(340, 435, 330, 443);
+//   line(344, 438, 334, 446);
+// }
+
+//chair
+function chair() {
+  fill(136, 136, 136);
+  ellipse(672, 472, 90, 40);
+  ellipse(671, 535, 114, 40);
+  push();
+  fill(0);
+  rect(656, 491, 6, 24);
+  rect(685, 491, 6, 24);
+  rect(642, 553, 6, 38);
+  rect(656, 554, 6, 26);
+  rect(685, 554, 6, 26);
+  rect(699, 552, 6, 38);
+
+  pop();
+}
 
 function largeRock() {
   fill(73, 55, 56);
@@ -189,6 +242,8 @@ function smallestRock() {
 }
 
 function draw() {
+  background(234, 200, 135);
+
   windows(40);
   windows(360);
   cardboard();
@@ -203,14 +258,21 @@ function draw() {
   smallShelf(50);
   smallShelf(555);
   smallShelf(-155);
-  lava();
-  startGround();
+  lava(lavaX);
   character();
-
-  bigTable();
   sun();
-  largeRock();
-  smallRock();
-  smallestRock();
-  // chair();
+
+  for (let bigTable of bigTables) {
+    drawBigTable(bigTable.x, bigTable.y);
+    bigTable.x -= 5;
+
+    if (bigTable.x > width) {
+      bigTable.x = Math.floor(Math.random() * 300);
+      bigTable.y = 450; // Reset position above the canvas
+    }
+  }
+
+  startGround();
+
+  animateLava();
 }
