@@ -1,23 +1,82 @@
 let lavaX = 0;
 let bigTables = [];
+let imag3;
+let screen = "start";
+let gameStarted = false;
 
+//Start screen image 
+function preload() {
+  imag3 = loadImage("gamescreendesign.png");
+}
 function setup() {
   createCanvas(700, 600);
-  // Define width and height variables here
-  let width = 700;
-  let height = 600;
 
-  background(234, 200, 135);
-
-  // Create big tables
   for (let i = 0; i < 1; i++) {
     const bigTable = {
       x: Math.floor(Math.random() * width),
-      y: Math.floor(Math.random() * height),
-      alpha: Math.random(),
+      y: 400,
     };
     bigTables.push(bigTable);
   }
+}
+
+function draw() {
+  if (screen === "start") {
+    startScreen();
+  } else if (screen === "game") {
+    gameScreen();
+  }
+}
+
+//displaying the strat screen
+function startScreen() {
+  background(234, 200, 135);
+
+  //GAME NAME
+  image(imag3, 0, 0, 700, 600);
+
+  //START button
+  fill(0);
+  rect(201, 309, 319, 70, 50);
+  textSize(24);
+  fill(245);
+  textFont("sans-serif");
+  text("Press ENTER to Start", 244, 350);
+}
+
+function gameScreen() {
+  background(234, 200, 135);
+
+  windows(40);
+  windows(360);
+  cardboard();
+  shelf(260, 110);
+  shelf(260, 160);
+  shelf(260, 210);
+  shelf(260, 260);
+  shelf(260, 310);
+  shelf(260, 360);
+  shelf(260, 410);
+  smallShelf(350);
+  smallShelf(50);
+  smallShelf(555);
+  smallShelf(-155);
+  lava(lavaX);
+  character();
+  sun();
+
+  animateLava();
+
+  for (let bigTable of bigTables) {
+    drawBigTable(bigTable.x, bigTable.y);
+    bigTable.x -= 5;
+
+    if (bigTable.x > width) {
+      bigTable.x = Math.floor(Math.random() * 300);
+      bigTable.y = 450;
+    }
+  }
+  startGround();
 }
 
 function windows(x) {
@@ -82,9 +141,9 @@ function shelf(x, y) {
 
 function lava() {
   let lavaWidth = 740;
-  let lavaFlows = 2;
+  // let lavaFlows = 2;
 
-  for (let i = 0; i < lavaFlows; i++) {
+  for (let i = 0; i < 2; i++) {
     let x = i * lavaWidth - lavaX;
 
     push();
@@ -108,7 +167,8 @@ function lava() {
     pop();
     pop();
   }
-
+}
+function animateLava() {
   lavaX += 5;
 
   if (lavaX > 740) {
@@ -126,11 +186,11 @@ function startGround() {
 
 /*
 function character() {
-  fill(0, 0, 0);
-  triangle(10, 370, 50, 250, 90, 370);
-  ellipse(50, 230, 35);
-  triangle(25, 370, 35, 420, 45, 370);
-  triangle(55, 370, 65, 420, 75, 370);
+fill(0, 0, 0);
+triangle(10, 370, 50, 250, 90, 370);
+ellipse(50, 230, 35);
+triangle(25, 370, 35, 420, 45, 370);
+triangle(55, 370, 65, 420, 75, 370);
 }*/
 
 //smaller
@@ -233,7 +293,6 @@ function smallRock() {
 
   endShape(CLOSE);
 }
-
 function smallestRock() {
   beginShape();
   fill(73, 55, 56);
@@ -241,38 +300,10 @@ function smallestRock() {
   endShape(CLOSE);
 }
 
-function draw() {
-  background(234, 200, 135);
-
-  windows(40);
-  windows(360);
-  cardboard();
-  shelf(260, 110);
-  shelf(260, 160);
-  shelf(260, 210);
-  shelf(260, 260);
-  shelf(260, 310);
-  shelf(260, 360);
-  shelf(260, 410);
-  smallShelf(350);
-  smallShelf(50);
-  smallShelf(555);
-  smallShelf(-155);
-  lava(lavaX);
-  character();
-  sun();
-
-  for (let bigTable of bigTables) {
-    drawBigTable(bigTable.x, bigTable.y);
-    bigTable.x -= 5;
-
-    if (bigTable.x > width) {
-      bigTable.x = Math.floor(Math.random() * 300);
-      bigTable.y = 450; // Reset position above the canvas
-    }
+// start game key pressed
+function keyPressed() {
+  if (keyCode === 13 && screen === "start") {
+    screen = "game";
+    gameStarted = true;
   }
-
-  startGround();
-
-  animateLava();
 }
