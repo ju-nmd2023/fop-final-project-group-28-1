@@ -1,23 +1,146 @@
-let lavaX = 0;
-let bigTables = [];
+class Obstacle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  display() {}
+}
+
+class BigTable extends Obstacle {
+  display() {
+    fill(73, 55, 76);
+    rect(this.x, this.y, 250, 70);
+    rect(this.x + 27, this.y + 70, 16, 60);
+    rect(this.x + 69, this.y + 70, 16, 40);
+    rect(this.x + 167, this.y + 70, 16, 60);
+    rect(this.x + 207, this.y + 70, 16, 40);
+
+    beginShape();
+    fill(255);
+    vertex(this.x + 37, this.y + 14);
+    vertex(this.x + 21, this.y + 27);
+    vertex(this.x + 37, this.y + 41);
+    vertex(this.x + 54, this.y + 27);
+    endShape(CLOSE);
+
+    line(this.x + 37, this.y + 20, this.x + 28, this.y + 27);
+    line(this.x + 41, this.y + 22, this.x + 31, this.y + 30);
+    line(this.x + 45, this.y + 25, this.x + 35, this.y + 33);
+  }
+}
+
+class Chair extends Obstacle {
+  display() {
+    fill(136, 136, 136);
+    ellipse(this.x, this.y, 90, 40);
+    ellipse(this.x - 1, this.y + 63, 114, 40);
+    fill(0);
+    rect(this.x - 16, this.y + 91, 6, 34);
+    rect(this.x + 13, this.y + 91, 6, 24);
+    rect(this.x - 30, this.y + 153, 6, 38);
+    rect(this.x - 16, this.y + 154, 6, 26);
+    rect(this.x + 13, this.y + 154, 6, 26);
+    rect(this.x + 27, this.y + 152, 6, 38);
+  }
+}
+
+class LargeRock extends Obstacle {
+  display() {
+    fill(73, 55, 56);
+
+    beginShape();
+    vertex(this.x, this.y);
+    vertex(this.x - 33, this.y + 1);
+    vertex(this.x - 45, this.y + 14);
+    vertex(this.x - 61, this.y + 21);
+    vertex(this.x - 59, this.y + 35);
+    vertex(this.x - 39, this.y + 35);
+    vertex(this.x - 16, this.y + 26);
+    vertex(this.x - 14, this.y + 15);
+    vertex(this.x - 6, this.y + 14);
+
+    endShape(CLOSE);
+  }
+}
+
+class SmallRock extends Obstacle {
+  display() {
+    fill(73, 55, 56);
+    beginShape();
+    vertex(this.x + 195, this.y + 191);
+    vertex(this.x + 162, this.y + 192);
+    vertex(this.x + 150, this.y + 205);
+    vertex(this.x + 134, this.y + 205);
+    vertex(this.x + 136, this.y + 219);
+    vertex(this.x + 156, this.y + 219);
+    vertex(this.x + 179, this.y + 210);
+    vertex(this.x + 181, this.y + 199);
+    vertex(this.x + 189, this.y + 198);
+
+    endShape(CLOSE);
+  }
+}
+
 let imag3;
 let screen = "start";
 let gameStarted = false;
+let bigTables = [];
+let lavaX = 0;
+let obstacle = [];
+let obstacleTypes = [BigTable, Chair, LargeRock, SmallRock];
+let x = 0;
+let y = 0;
+let gravity = 5;
+let lavaWidth;
 
-//Start screen image 
-function preload() {
-  imag3 = loadImage("gamescreendesign.png");
-}
 function setup() {
   createCanvas(700, 600);
+  let width = 700;
+  let height = 600;
+  lavaWidth = 740;
 
-  for (let i = 0; i < 1; i++) {
-    const bigTable = {
-      x: Math.floor(Math.random() * width),
-      y: 400,
-    };
-    bigTables.push(bigTable);
-  }
+  background(234, 200, 135);
+
+  // Create objects
+  obstacle.push(
+    new BigTable(
+      Math.floor(Math.random() * width),
+      Math.floor(Math.random() * 130) + 420
+    )
+  );
+  obstacle.push(
+    new Chair(
+      Math.floor(Math.random() * width),
+      Math.floor(Math.random() * 130) + 420
+    )
+  );
+  obstacle.push(
+    new LargeRock(
+      Math.floor(Math.random() * width),
+      Math.floor(Math.random() * 130) + 420
+    )
+  );
+  obstacle.push(
+    new SmallRock(
+      Math.floor(Math.random() * width),
+      Math.floor(Math.random() * 130) + 420
+    )
+  );
+  //   // Create big tables
+  //   for (let i = 0; i < 1; i++) {
+  //     const bigTable = {
+  //       x: Math.floor(Math.random() * width),
+  //       y: 400,
+  //       alpha: Math.random(),
+  //     };
+  //     bigTables.push(bigTable);
+  //   }
+}
+
+//Start screen image
+function preload() {
+  imag3 = loadImage("gamescreendesign.png");
 }
 
 function draw() {
@@ -25,6 +148,7 @@ function draw() {
     startScreen();
   } else if (screen === "game") {
     gameScreen();
+    controls();
   }
 }
 
@@ -42,41 +166,6 @@ function startScreen() {
   fill(245);
   textFont("sans-serif");
   text("Press ENTER to Start", 244, 350);
-}
-
-function gameScreen() {
-  background(234, 200, 135);
-
-  windows(40);
-  windows(360);
-  cardboard();
-  shelf(260, 110);
-  shelf(260, 160);
-  shelf(260, 210);
-  shelf(260, 260);
-  shelf(260, 310);
-  shelf(260, 360);
-  shelf(260, 410);
-  smallShelf(350);
-  smallShelf(50);
-  smallShelf(555);
-  smallShelf(-155);
-  lava(lavaX);
-  character();
-  sun();
-
-  animateLava();
-
-  for (let bigTable of bigTables) {
-    drawBigTable(bigTable.x, bigTable.y);
-    bigTable.x -= 5;
-
-    if (bigTable.x > width) {
-      bigTable.x = Math.floor(Math.random() * 300);
-      bigTable.y = 450;
-    }
-  }
-  startGround();
 }
 
 function windows(x) {
@@ -196,108 +285,10 @@ triangle(55, 370, 65, 420, 75, 370);
 //smaller
 function character() {
   fill(0, 0, 0);
-  triangle(51, 282, 20, 391, 83, 391);
-  ellipse(51, 268, 25);
-  triangle(33, 391, 41, 419, 49, 391);
-  triangle(53, 391, 60, 419, 70, 391);
-}
-
-function drawBigTable(x, y) {
-  fill(73, 55, 76);
-  rect(x, y, 250, 70);
-  rect(x + 27, y + 70, 16, 60);
-  rect(x + 69, y + 70, 16, 40);
-  rect(x + 167, y + 70, 16, 60);
-  rect(x + 207, y + 70, 16, 40);
-
-  beginShape();
-  fill(255);
-  vertex(x + 37, y + 14);
-  vertex(x + 21, y + 27);
-  vertex(x + 37, y + 41);
-  vertex(x + 54, y + 27);
-  endShape(CLOSE);
-
-  line(x + 37, y + 20, x + 28, y + 27);
-  line(x + 41, y + 22, x + 31, y + 30);
-  line(x + 45, y + 25, x + 35, y + 33);
-}
-
-// function bigTable(x) {
-//   fill(73, 55, 76);
-//   rect(296, 413, 250, 70);
-//   rect(323, 483, 16, 60);
-//   rect(365, 483, 16, 40);
-//   rect(463, 483, 16, 60);
-//   rect(503, 483, 16, 40);
-
-//   beginShape();
-//   fill(255);
-//   vertex(336, 427);
-//   vertex(320, 440);
-//   vertex(336, 454);
-//   vertex(353, 440);
-//   endShape(CLOSE);
-
-//   line(336, 433, 327, 440);
-//   line(340, 435, 330, 443);
-//   line(344, 438, 334, 446);
-// }
-
-//chair
-function chair() {
-  fill(136, 136, 136);
-  ellipse(672, 472, 90, 40);
-  ellipse(671, 535, 114, 40);
-  push();
-  fill(0);
-  rect(656, 491, 6, 24);
-  rect(685, 491, 6, 24);
-  rect(642, 553, 6, 38);
-  rect(656, 554, 6, 26);
-  rect(685, 554, 6, 26);
-  rect(699, 552, 6, 38);
-
-  pop();
-}
-
-function largeRock() {
-  fill(73, 55, 56);
-
-  beginShape();
-  vertex(246, 474);
-  vertex(213, 475);
-  vertex(201, 488);
-  vertex(185, 495);
-  vertex(187, 509);
-  vertex(207, 509);
-  vertex(230, 500);
-  vertex(232, 489);
-  vertex(240, 488);
-
-  endShape(CLOSE);
-}
-
-function smallRock() {
-  fill(73, 55, 56);
-  beginShape();
-  vertex(441, 591);
-  vertex(408, 592);
-  vertex(396, 605);
-  vertex(380, 605);
-  vertex(382, 619);
-  vertex(402, 619);
-  vertex(425, 610);
-  vertex(427, 599);
-  vertex(435, 598);
-
-  endShape(CLOSE);
-}
-function smallestRock() {
-  beginShape();
-  fill(73, 55, 56);
-  ellipse(699, 519, 20, 5);
-  endShape(CLOSE);
+  triangle(x + 51, y + 282, x + 20, y + 391, x + 83, y + 391);
+  ellipse(x + 51, y + 268, 25);
+  triangle(x + 33, y + 391, x + 41, y + 419, x + 49, y + 391);
+  triangle(x + 53, y + 391, x + 60, y + 419, x + 70, y + 391);
 }
 
 // start game key pressed
@@ -306,4 +297,109 @@ function keyPressed() {
     screen = "game";
     gameStarted = true;
   }
+}
+
+function controls() {
+  if (keyIsPressed) {
+    if (keyCode === 38) {
+      y -= 5;
+    } else if (keyCode === 39) {
+      x += 5;
+    } else if (keyCode === 37) {
+      x -= 5;
+    } else if (keyCode === 40) {
+      y += 5;
+    }
+  }
+}
+
+function updateCharacter() {
+  let landedOnObstacle = false;
+  let obstacleIndex = -1;
+  // Check collision with obstacles
+  for (let i = 0; i < obstacle.length; i++) {
+    let obj = obstacle[i];
+    if (
+      x > obj.x && // Check if the character's right bottom corner is to the right of the obstacle's left edge
+      x + 20 < obj.x + 150 && // Check if the character's left bottom corner is to the left of the obstacle's right edge
+      y + 282 > obj.y && // Check if the character's legs touch the top of the obstacle
+      y + 282 < obj.y + 70 // Check if the character's legs are above the bottom edge of the obstacle
+    ) {
+      // If character's legs touch the obstacle, adjust character's x position to stay at that specific place
+      x = obj.x - 20; // Adjust the character's x position to be in the same x position as the obstacle
+      landedOnObstacle = true;
+      obstacleIndex = i;
+      break;
+    }
+  }
+
+  // Check collision with lava
+  if (
+    x + 51 > lavaX && // Check if the character's right bottom corner is to the right of the lava's left edge
+    x + 20 < lavaX + lavaWidth && // Check if the character's left bottom corner is to the left of the lava's right edge
+    y + 282 > 450 && // Check if the character's legs touch the top of the lava
+    y + 282 < 600 // Check if the character's legs are above the bottom edge of the canvas
+  ) {
+    // If the character lands on the lava, keep the character's current position
+    return; // Exit the function to prevent further movement processing
+  }
+  // Check if the character is on the ground
+  if (y === 420) {
+    gravity = 0; // Stop gravity if on the ground
+  }
+  // Apply gravity if not on an obstacle, lava, or the ground
+  if (!landedOnObstacle && y !== 420) {
+    gravity = 1;
+  }
+  y += gravity;
+  controls(); // Call the controls function to handle key events
+}
+
+function gameScreen() {
+  background(234, 200, 135);
+
+  windows(40);
+  windows(360);
+  cardboard();
+  shelf(260, 110);
+  shelf(260, 160);
+  shelf(260, 210);
+  shelf(260, 260);
+  shelf(260, 310);
+  shelf(260, 360);
+  shelf(260, 410);
+  smallShelf(350);
+  smallShelf(50);
+  smallShelf(555);
+  smallShelf(-155);
+  animateLava();
+  lava(lavaX);
+  sun();
+
+  // Call new obstacles randomly
+  if (frameCount % 100 === 0) {
+    let rand = Math.floor(random(obstacleTypes.length));
+    let newObstacle = new obstacleTypes[rand](
+      700,
+      Math.floor(Math.random() * 130) + 420
+    );
+    obstacle.push(newObstacle);
+  }
+
+  // Draw and update obstacles
+  for (let i = obstacle.length - 1; i >= 0; i--) {
+    let obj = obstacle[i];
+    obj.display();
+    obj.x -= 5;
+
+    // Remove obstacles
+    if (obj.x < -250) {
+      obstacle.splice(i, 1);
+    }
+  }
+
+  startGround();
+  character();
+  controls();
+  updateCharacter();
 }
