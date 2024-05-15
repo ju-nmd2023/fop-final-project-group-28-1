@@ -126,13 +126,7 @@ function startScreen() {
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
 
-  //START button
-  fill(0);
-  rect(201, 309, 319, 70, 50);
-  textSize(24);
-  fill(245);
-  textFont("sans-serif");
-  text("Press ENTER to Start", 244, 350);
+
 }
 
 //------------------- TRY!!!!//---------------------
@@ -378,10 +372,7 @@ function updateCharacter() {
       }
     }
 
-
-
     
-
 
     // when book collide with character
     for (let i = 0; i < books.length; i++) {
@@ -496,9 +487,12 @@ function resultScreen() {
     console.log(y);
 
     fill(255);
-    text("You Crushed!", 300, 300);
-    text("Please Press Space To Restart", 300, 350);
+    textSize(29);
+    text("You Crushed!", 250, 300);
+    text("Please Press Space To Restart", 160, 350);
   }
 }
 
 ////// tryyyyyy
+
+
