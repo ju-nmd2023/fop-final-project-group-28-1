@@ -60,8 +60,8 @@ let gravityEnabled = false;
 let speed = 5;
 let displayFlag = false;
 let timer = 0;
-let flagX = 0;
-let flagY = 0;
+// let flagX = 0;
+// let flagY = 0;
 let onTable = false;
 let books = [];
 let lifeHearts = [];
@@ -74,13 +74,6 @@ function setup() {
   lavaWidth = 740;
 
   background(234, 200, 135);
-
-  //book loop
-  for (let i = 0; i < 1; i++) {
-    let x = random(400, 650);
-    let y = random(200, 300);
-    books.push({ x, y });
-  }
 
   // Create obstacles
   obstacle.push(new LargeRock(Math.floor(700), Math.floor(420)));
@@ -102,6 +95,12 @@ function setup() {
     bigTables.push(newBigTable);
   }
 
+  //book loop
+  for (let i = 0; i < 1; i++) {
+    let x = random(400, 650);
+    let y = random(200, 300);
+    books.push({ x, y });
+  }
   //loop life hearts
   for (let i = 0; i < 3; i++) {
     lifeHearts.push({ x: 10 + i * 25, y: 17 });
@@ -131,6 +130,14 @@ function startScreen() {
 
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
+
+  //START button
+  fill(0);
+  rect(201, 309, 319, 70, 50);
+  textSize(24);
+  fill(245);
+  textFont("sans-serif");
+  text("Press ENTER to Start", 244, 350);
 }
 
 //------------------- TRY!!!!//---------------------
@@ -162,8 +169,6 @@ function updateBooks() {
     }
   }
 }
-
-//___________ ADDED TRYYYYYY
 
 function drawBigTable(x, y) {
   fill(73, 55, 76);
@@ -342,11 +347,15 @@ function displayHearts() {
     drawHeart(heart.x, heart.y);
   }
 }
+
 // start game key pressed
 function keyPressed() {
   if (keyCode === 13 && screen === "start") {
     screen = "game";
     gameStarted = true;
+  }
+  if (keyCode === 13 && screen === "result") {
+    resetGame();
   }
 }
 
@@ -386,10 +395,14 @@ function updateCharacter() {
         y + 391 > bigTable.y &&
         y + 268 < bigTable.y + 70
       ) {
-        console.log("Collision with table detected!");
+        // console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
+        acceleration = 0;
+        console.log(y);
         x -= speed;
+      } else {
+        acceleration = 1; // If no collision, character is off the table
       }
     }
 
@@ -424,9 +437,15 @@ function updateCharacter() {
       y = 400;
     }
 
+    // if (!onTable) {
+    //   gravityEnabled = true;
+    //   gravity = 15;
+    //   acceleration =
+    //   gravity = gravity + acceleration;
+    //   y += gravity;
+    // }
     // if (y >= 400) {
     //   gravity = 0;
-
     //   y = 400;
     // }
 
@@ -506,21 +525,21 @@ function gameScreen() {
   updateBooks();
   displayHearts();
 }
+
 function resultScreen() {
   if (y >= 400) {
     gravity = 0;
     screen = "result";
     y = 300;
     lavaX = 0;
-    character.y = 400;
 
     console.log("crushed");
     console.log(y);
 
     fill(255);
-    textSize(29);
-    text("You Crushed!", 250, 300);
-    text("Please Press Space To Restart", 160, 350);
+    textSize(40);
+    text("You died!", 100, 300);
+    text("Please Press Space To Restart", 100, 350);
   }
 
   //here so when no health left = crash screen
@@ -540,7 +559,30 @@ function resultScreen() {
     text("Please Press Space To Restart", 160, 350);
     console.log("NO HEARTS LEFT");
   }
+
+  if (displayFlag === true && timer === 1510) {
+    screen = "result";
+    x = 650;
+    lavaX = 0;
+    gravity = 0;
+
+    console.log("won");
+    console.log(y);
+
+    fill(255);
+    textSize(40);
+    text("You Won!", 100, 300);
+    text("Please Press Space To Restart", 100, 350);
+  }
 }
 
-//so put the heart in an array so when book collide splice one from list
-//when book collide happens heart array -1
+function resetGame() {
+  x = 0;
+  y = -50;
+  timer = 0;
+  gravity = 15;
+  acceleration = 1;
+  screen = "game";
+  gravityEnabled = false;
+  speed = 5;
+}
