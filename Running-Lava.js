@@ -60,10 +60,9 @@ let gravityEnabled = false;
 let speed = 5;
 let displayFlag = false;
 let timer = 0;
-let flagX = 0;
-let flagY = 0;
+// let flagX = 0;
+// let flagY = 0;
 let onTable = false;
-let books = [];
 
 function setup() {
   createCanvas(700, 600);
@@ -73,13 +72,6 @@ function setup() {
   lavaWidth = 740;
 
   background(234, 200, 135);
-
-  //book object with random position
-  for (let i = 0; i < 1; i++) {
-    let x = random(400, 600);
-    let y = random(200, 300);
-    books.push({ x, y });
-  }
 
   // Create obstacles
   obstacle.push(new LargeRock(Math.floor(700), Math.floor(420)));
@@ -134,38 +126,6 @@ function startScreen() {
   textFont("sans-serif");
   text("Press ENTER to Start", 244, 350);
 }
-
-//------------------- TRY!!!!//---------------------
-
-
-function displayBook(x, y) {
-  fill(150, 75, 0); 
-  rect(x, y, 60, 30, 2);
-  fill(255); 
-  rect(x, y - 6, 60, 10, 2); 
-  fill(0); 
-  rect(x, y - 6, 5, 10, 2); 
-}
-
-/// READ THIS-------------------------------
-
-function updateBooks() {
-  for (let i = books.length - 1; i >= 0; i--) {
-    let book = books[i];
-    book.y += 5;
-    book.x -= 5;
-    displayBook(book.x, book.y); 
- 
-    if (book.y > height) {
-      books.splice(i, 1);
-      let x = random(400, 600);
-      let y = random(-200, 0);
-      books.push({ x: x, y: y });
-    }
-  }
-}
-
-//___________ ADDED TRYYYYYY
 
 function drawBigTable(x, y) {
   fill(73, 55, 76);
@@ -333,6 +293,9 @@ function keyPressed() {
     screen = "game";
     gameStarted = true;
   }
+  if (keyCode === 13 && screen === "result") {
+    resetGame();
+  }
 }
 
 function controls() {
@@ -366,43 +329,29 @@ function updateCharacter() {
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
       if (
-        x  > bigTable.x &&
-        x  + 30< bigTable.x + 250 &&
+        x > bigTable.x &&
+        x + 30 < bigTable.x + 250 &&
         y + 391 > bigTable.y &&
         y + 268 < bigTable.y + 70
       ) {
-        console.log("Collision with table detected!");
+        // console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
+        acceleration = 0;
+        console.log(y);
         x -= speed;
+      } else {
+        acceleration = 1; // If no collision, character is off the table
       }
     }
 
-
-
-    
-
-
-    // when book collide with character
-    for (let i = 0; i < books.length; i++) {
-      let book = books[i];
-      if (
-        x + 51 > book.x &&
-        x + 51 < book.x + 60 &&
-        y + 391 > book.y &&
-        y + 282 < book.y + 30
-      ) {
-        x = 0;
-        y = -50;
-        console.log("Collision with book!");
-      }
-    }
-
-    if (y >= 400) {
-      gravity = 0;
-      y = 400;
-    }
-
+    // if (!onTable) {
+    //   gravityEnabled = true;
+    //   gravity = 15;
+    //   acceleration =
+    //   gravity = gravity + acceleration;
+    //   y += gravity;
+    // }
     // if (y >= 400) {
     //   gravity = 0;
     //   y = 400;
@@ -473,7 +422,7 @@ function gameScreen() {
 
   timer++;
 
-  if (timer === 1500) {
+  if (timer === 500) {
     displayFlag = true;
   }
 
@@ -481,7 +430,6 @@ function gameScreen() {
   character();
   controls();
   updateCharacter();
-  updateBooks();
 }
 
 function resultScreen() {
@@ -490,15 +438,38 @@ function resultScreen() {
     screen = "result";
     y = 300;
     lavaX = 0;
-    character.y = 400;
 
     console.log("crushed");
     console.log(y);
 
     fill(255);
-    text("You Crushed!", 300, 300);
-    text("Please Press Space To Restart", 300, 350);
+    textSize(40);
+    text("You died!", 100, 300);
+    text("Please Press Space To Restart", 100, 350);
+  }
+  if (displayFlag === true && timer === 510) {
+    screen = "result";
+    x = 650;
+    lavaX = 0;
+    gravity = 0;
+
+    console.log("won");
+    console.log(y);
+
+    fill(255);
+    textSize(40);
+    text("You Won!", 100, 300);
+    text("Please Press Space To Restart", 100, 350);
   }
 }
 
-////// tryyyyyy
+function resetGame() {
+  x = 0;
+  y = -50;
+  timer = 0;
+  gravity = 15;
+  acceleration = 1;
+  screen = "game";
+  gravityEnabled = false;
+  speed = 5;
+}
