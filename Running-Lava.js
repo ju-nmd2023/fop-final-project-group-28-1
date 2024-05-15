@@ -7,44 +7,6 @@ class Obstacle {
   display() {}
 }
 
-class BigTable extends Obstacle {
-  display() {
-    fill(73, 55, 76);
-    rect(this.x, this.y, 250, 70);
-    rect(this.x + 27, this.y + 70, 16, 60);
-    rect(this.x + 69, this.y + 70, 16, 40);
-    rect(this.x + 167, this.y + 70, 16, 60);
-    rect(this.x + 207, this.y + 70, 16, 40);
-
-    beginShape();
-    fill(255);
-    vertex(this.x + 37, this.y + 14);
-    vertex(this.x + 21, this.y + 27);
-    vertex(this.x + 37, this.y + 41);
-    vertex(this.x + 54, this.y + 27);
-    endShape(CLOSE);
-
-    line(this.x + 37, this.y + 20, this.x + 28, this.y + 27);
-    line(this.x + 41, this.y + 22, this.x + 31, this.y + 30);
-    line(this.x + 45, this.y + 25, this.x + 35, this.y + 33);
-  }
-}
-
-class Chair extends Obstacle {
-  display() {
-    fill(136, 136, 136);
-    ellipse(this.x, this.y, 90, 40);
-    ellipse(this.x - 1, this.y + 63, 114, 40);
-    fill(0);
-    rect(this.x - 16, this.y + 91, 6, 34);
-    rect(this.x + 13, this.y + 91, 6, 24);
-    rect(this.x - 30, this.y + 153, 6, 38);
-    rect(this.x - 16, this.y + 154, 6, 26);
-    rect(this.x + 13, this.y + 154, 6, 26);
-    rect(this.x + 27, this.y + 152, 6, 38);
-  }
-}
-
 class LargeRock extends Obstacle {
   display() {
     fill(73, 55, 56);
@@ -88,11 +50,18 @@ let gameStarted = false;
 let bigTables = [];
 let lavaX = 0;
 let obstacle = [];
-let obstacleTypes = [BigTable, Chair, LargeRock, SmallRock];
+let obstacleTypes = [LargeRock, SmallRock];
 let x = 0;
-let y = 0;
-let gravity = 5;
+let y = -50;
+let gravity = 15;
 let lavaWidth;
+let acceleration = 1;
+let gravityEnabled = false;
+let speed = 5;
+let displayFlag = false;
+let timer = 0;
+let flagX = 0;
+let flagY = 0;
 
 function setup() {
   createCanvas(700, 600);
@@ -103,18 +72,18 @@ function setup() {
   background(234, 200, 135);
 
   // Create objects
-  obstacle.push(
-    new BigTable(
-      Math.floor(Math.random() * width),
-      Math.floor(Math.random() * 130) + 420
-    )
-  );
-  obstacle.push(
-    new Chair(
-      Math.floor(Math.random() * width),
-      Math.floor(Math.random() * 130) + 420
-    )
-  );
+  // obstacle.push(
+  //   new BigTable(
+  //     Math.floor(Math.random() * width),
+  //     Math.floor(Math.random() * 130) + 420
+  //   )
+  // );
+  // obstacle.push(
+  //   new Chair(
+  //     Math.floor(Math.random() * width),
+  //     Math.floor(Math.random() * 130) + 420
+  //   )
+  // );
   obstacle.push(
     new LargeRock(
       Math.floor(Math.random() * width),
@@ -127,15 +96,21 @@ function setup() {
       Math.floor(Math.random() * 130) + 420
     )
   );
-  //   // Create big tables
-  //   for (let i = 0; i < 1; i++) {
-  //     const bigTable = {
-  //       x: Math.floor(Math.random() * width),
-  //       y: 400,
-  //       alpha: Math.random(),
-  //     };
-  //     bigTables.push(bigTable);
-  //   }
+  // Create big tables
+  for (let i = 0; i < 1; i++) {
+    const bigTable = {
+      x: 150,
+      y: 400,
+      alpha: Math.random(),
+    };
+    const newBigTable = {
+      x: 600,
+      y: 400,
+      alpha: Math.random(),
+    };
+    bigTables.push(bigTable);
+    bigTables.push(newBigTable);
+  }
 }
 
 //Start screen image
@@ -166,6 +141,27 @@ function startScreen() {
   fill(245);
   textFont("sans-serif");
   text("Press ENTER to Start", 244, 350);
+}
+
+function drawBigTable(x, y) {
+  fill(73, 55, 76);
+  rect(x, y, 250, 70);
+  rect(x + 27, y + 70, 16, 60);
+  rect(x + 69, y + 70, 16, 40);
+  rect(x + 167, y + 70, 16, 60);
+  rect(x + 207, y + 70, 16, 40);
+
+  beginShape();
+  fill(255);
+  vertex(x + 37, y + 14);
+  vertex(x + 21, y + 27);
+  vertex(x + 37, y + 41);
+  vertex(x + 54, y + 27);
+  endShape(CLOSE);
+
+  line(x + 37, y + 20, x + 28, y + 27);
+  line(x + 41, y + 22, x + 31, y + 30);
+  line(x + 45, y + 25, x + 35, y + 33);
 }
 
 function windows(x) {
@@ -269,7 +265,7 @@ function startGround() {
   push();
   noStroke();
   fill(150, 150, 150);
-  rect(0, 420, 100, 180);
+  rect(0, 370, 100, 230);
   pop();
 }
 
@@ -285,10 +281,29 @@ triangle(55, 370, 65, 420, 75, 370);
 //smaller
 function character() {
   fill(0, 0, 0);
+  //body
   triangle(x + 51, y + 282, x + 20, y + 391, x + 83, y + 391);
+  //face
   ellipse(x + 51, y + 268, 25);
+  // legs
   triangle(x + 33, y + 391, x + 41, y + 419, x + 49, y + 391);
   triangle(x + 53, y + 391, x + 60, y + 419, x + 70, y + 391);
+}
+
+function flag(flagX, flagY) {
+  if (displayFlag) {
+    fill(225);
+    triangle(
+      flagX + 600,
+      flagY + 290,
+      flagX + 650,
+      flagY + 330,
+      flagX + 600,
+      flagY + 355
+    );
+    fill(0, 0, 0);
+    rect(flagX + 600, flagY + 350, 6, 70);
+  }
 }
 
 // start game key pressed
@@ -300,59 +315,50 @@ function keyPressed() {
 }
 
 function controls() {
-  if (keyIsPressed) {
-    if (keyCode === 38) {
-      y -= 5;
-    } else if (keyCode === 39) {
-      x += 5;
-    } else if (keyCode === 37) {
-      x -= 5;
-    } else if (keyCode === 40) {
-      y += 5;
-    }
+  if (keyIsDown(32) || keyIsDown(38)) {
+    y -= 20;
+    x += 6;
+    gravityEnabled = true;
+  } else if (keyIsDown(39)) {
+    x += 5;
+    gravityEnabled = true;
+  } else if (keyIsDown(37)) {
+    x -= 5;
+    gravityEnabled = true;
+  } else if (keyIsDown(40)) {
+    y += 5;
+    gravityEnabled = true;
   }
 }
 
 function updateCharacter() {
-  let landedOnObstacle = false;
-  let obstacleIndex = -1;
-  // Check collision with obstacles
-  for (let i = 0; i < obstacle.length; i++) {
-    let obj = obstacle[i];
-    if (
-      x > obj.x && // Check if the character's right bottom corner is to the right of the obstacle's left edge
-      x + 20 < obj.x + 150 && // Check if the character's left bottom corner is to the left of the obstacle's right edge
-      y + 282 > obj.y && // Check if the character's legs touch the top of the obstacle
-      y + 282 < obj.y + 70 // Check if the character's legs are above the bottom edge of the obstacle
-    ) {
-      // If character's legs touch the obstacle, adjust character's x position to stay at that specific place
-      x = obj.x - 20; // Adjust the character's x position to be in the same x position as the obstacle
-      landedOnObstacle = true;
-      obstacleIndex = i;
-      break;
+  if (gravityEnabled) {
+    gravity = gravity + acceleration;
+    gravity = 5;
+
+    for (let i = 0; i < bigTables.length; i++) {
+      let bigTable = bigTables[i];
+      if (
+        x + 70 > bigTable.x &&
+        x < bigTable.x + 250 &&
+        y + 391 > bigTable.y &&
+        y + 268 < bigTable.y + 70
+      ) {
+        console.log("Collision with table detected!");
+        gravity = 0;
+        y = bigTable.y - 282;
+      }
+    }
+
+    if (y >= 400) {
+      gravity = 0;
+      y = 400;
+    }
+
+    if (y !== 400 && y + 282 < 400) {
+      y += gravity;
     }
   }
-
-  // Check collision with lava
-  if (
-    x + 51 > lavaX && // Check if the character's right bottom corner is to the right of the lava's left edge
-    x + 20 < lavaX + lavaWidth && // Check if the character's left bottom corner is to the left of the lava's right edge
-    y + 282 > 450 && // Check if the character's legs touch the top of the lava
-    y + 282 < 600 // Check if the character's legs are above the bottom edge of the canvas
-  ) {
-    // If the character lands on the lava, keep the character's current position
-    return; // Exit the function to prevent further movement processing
-  }
-  // Check if the character is on the ground
-  if (y === 420) {
-    gravity = 0; // Stop gravity if on the ground
-  }
-  // Apply gravity if not on an obstacle, lava, or the ground
-  if (!landedOnObstacle && y !== 420) {
-    gravity = 1;
-  }
-  y += gravity;
-  controls(); // Call the controls function to handle key events
 }
 
 function gameScreen() {
@@ -376,26 +382,30 @@ function gameScreen() {
   lava(lavaX);
   sun();
 
-  // Call new obstacles randomly
-  if (frameCount % 100 === 0) {
-    let rand = Math.floor(random(obstacleTypes.length));
-    let newObstacle = new obstacleTypes[rand](
-      700,
-      Math.floor(Math.random() * 130) + 420
-    );
-    obstacle.push(newObstacle);
+  for (let i = bigTables.length - 1; i >= 0; i--) {
+    let bigTable = bigTables[i];
+    drawBigTable(bigTable.x, bigTable.y);
+
+    bigTable.x -= speed;
+    speed += 0.01;
+
+    if (bigTable.x + 280 <= 0) {
+      bigTable.x = 650;
+      bigTable.y = 400;
+    }
+
+    if (timer >= 500 && !displayFlag) {
+      for (let i = 0; i < bigTables.length; i++) {
+        let bigTable = bigTables[i];
+        displayFlag = true;
+        flagX = bigTable.x + 600;
+        flagY = bigTable.y - 80;
+      }
+    }
   }
 
-  // Draw and update obstacles
-  for (let i = obstacle.length - 1; i >= 0; i--) {
-    let obj = obstacle[i];
-    obj.display();
-    obj.x -= 5;
-
-    // Remove obstacles
-    if (obj.x < -250) {
-      obstacle.splice(i, 1);
-    }
+  if (displayFlag) {
+    flag(flagX, flagY);
   }
 
   startGround();
