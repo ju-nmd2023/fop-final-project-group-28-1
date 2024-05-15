@@ -62,40 +62,21 @@ let displayFlag = false;
 let timer = 0;
 let flagX = 0;
 let flagY = 0;
+let onTable = false;
 
 function setup() {
   createCanvas(700, 600);
+
   let width = 700;
   let height = 600;
   lavaWidth = 740;
 
   background(234, 200, 135);
 
-  // Create objects
-  // obstacle.push(
-  //   new BigTable(
-  //     Math.floor(Math.random() * width),
-  //     Math.floor(Math.random() * 130) + 420
-  //   )
-  // );
-  // obstacle.push(
-  //   new Chair(
-  //     Math.floor(Math.random() * width),
-  //     Math.floor(Math.random() * 130) + 420
-  //   )
-  // );
-  obstacle.push(
-    new LargeRock(
-      Math.floor(Math.random() * width),
-      Math.floor(Math.random() * 130) + 420
-    )
-  );
-  obstacle.push(
-    new SmallRock(
-      Math.floor(Math.random() * width),
-      Math.floor(Math.random() * 130) + 420
-    )
-  );
+  // Create obstacles
+  obstacle.push(new LargeRock(Math.floor(700), Math.floor(420)));
+  obstacle.push(new SmallRock(Math.floor(700), Math.floor(420)));
+
   // Create big tables
   for (let i = 0; i < 1; i++) {
     const bigTable = {
@@ -124,6 +105,9 @@ function draw() {
   } else if (screen === "game") {
     gameScreen();
     controls();
+    resultScreen();
+  } else if (screen === "result") {
+    resultScreen();
   }
 }
 
@@ -290,19 +274,16 @@ function character() {
   triangle(x + 53, y + 391, x + 60, y + 419, x + 70, y + 391);
 }
 
-function flag(flagX, flagY) {
+function end() {
   if (displayFlag) {
-    fill(225);
-    triangle(
-      flagX + 600,
-      flagY + 290,
-      flagX + 650,
-      flagY + 330,
-      flagX + 600,
-      flagY + 355
-    );
-    fill(0, 0, 0);
-    rect(flagX + 600, flagY + 350, 6, 70);
+    fill(0);
+    rect(650, 0, 50, 100);
+    rect(650, 200, 50, 100);
+    rect(650, 400, 50, 100);
+    fill(255);
+    rect(650, 100, 50, 100);
+    rect(650, 300, 50, 100);
+    rect(650, 500, 50, 100);
   }
 }
 
@@ -316,7 +297,7 @@ function keyPressed() {
 
 function controls() {
   if (keyIsDown(32) || keyIsDown(38)) {
-    y -= 20;
+    y -= 10;
     x += 6;
     gravityEnabled = true;
   } else if (keyIsDown(39)) {
@@ -334,7 +315,13 @@ function controls() {
 function updateCharacter() {
   if (gravityEnabled) {
     gravity = gravity + acceleration;
-    gravity = 5;
+
+    y += gravity;
+
+    // if (onTable) {
+    //   gravity = 0;
+    //   x = +speed;
+    // }
 
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
@@ -345,19 +332,20 @@ function updateCharacter() {
         y + 268 < bigTable.y + 70
       ) {
         console.log("Collision with table detected!");
+        onTable = true;
         gravity = 0;
-        y = bigTable.y - 282;
+        x -= speed;
       }
     }
 
-    if (y >= 400) {
-      gravity = 0;
-      y = 400;
-    }
+    // if (y >= 400) {
+    //   gravity = 0;
+    //   y = 400;
+    // }
 
-    if (y !== 400 && y + 282 < 400) {
-      y += gravity;
-    }
+    // if (y !== 410 && y + 282 < 410) {
+    //   y += gravity;
+    // }
   }
 }
 
@@ -382,34 +370,67 @@ function gameScreen() {
   lava(lavaX);
   sun();
 
+  // // Call new obstacles randomly
+  if (frameCount % 100 === 0) {
+    let rand = Math.floor(random(obstacleTypes.length));
+    let newObstacle = new obstacleTypes[rand](
+      700,
+      Math.floor(Math.random() * 130) + 420
+    );
+    obstacle.push(newObstacle);
+  }
+
+  for (let i = obstacle.length - 1; i >= 0; i--) {
+    let obj = obstacle[i];
+    obj.display();
+    obj.x -= 5;
+
+    // Remove obstacles
+    if (obj.x < -250) {
+      obstacle.splice(i, 1);
+    }
+  }
+
   for (let i = bigTables.length - 1; i >= 0; i--) {
     let bigTable = bigTables[i];
     drawBigTable(bigTable.x, bigTable.y);
 
     bigTable.x -= speed;
-    speed += 0.01;
+    speed += 0.009;
 
     if (bigTable.x + 280 <= 0) {
       bigTable.x = 650;
       bigTable.y = 400;
     }
-
-    if (timer >= 500 && !displayFlag) {
-      for (let i = 0; i < bigTables.length; i++) {
-        let bigTable = bigTables[i];
-        displayFlag = true;
-        flagX = bigTable.x + 600;
-        flagY = bigTable.y - 80;
-      }
-    }
   }
 
-  if (displayFlag) {
-    flag(flagX, flagY);
+  end();
+
+  timer++;
+
+  if (timer === 1500) {
+    displayFlag = true;
   }
 
   startGround();
   character();
   controls();
   updateCharacter();
+}
+
+function resultScreen() {
+  if (y >= 400) {
+    gravity = 0;
+    screen = "result";
+    y = 300;
+    lavaX = 0;
+    character.y = 400;
+
+    console.log("crushed");
+    console.log(y);
+
+    fill(255);
+    text("You Crushed!", 300, 300);
+    text("Please Press Space To Restart", 300, 350);
+  }
 }
