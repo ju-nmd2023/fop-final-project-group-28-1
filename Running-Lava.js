@@ -63,6 +63,7 @@ let timer = 0;
 let flagX = 0;
 let flagY = 0;
 let onTable = false;
+let books = [];
 
 function setup() {
   createCanvas(700, 600);
@@ -72,6 +73,13 @@ function setup() {
   lavaWidth = 740;
 
   background(234, 200, 135);
+
+  //book object with random position
+  for (let i = 0; i < 1; i++) {
+    let x = random(400, 600);
+    let y = random(200, 300);
+    books.push({ x, y });
+  }
 
   // Create obstacles
   obstacle.push(new LargeRock(Math.floor(700), Math.floor(420)));
@@ -126,6 +134,38 @@ function startScreen() {
   textFont("sans-serif");
   text("Press ENTER to Start", 244, 350);
 }
+
+//------------------- TRY!!!!//---------------------
+
+
+function displayBook(x, y) {
+  fill(150, 75, 0); 
+  rect(x, y, 60, 30, 2);
+  fill(255); 
+  rect(x, y - 6, 60, 10, 2); 
+  fill(0); 
+  rect(x, y - 6, 5, 10, 2); 
+}
+
+/// READ THIS-------------------------------
+
+function updateBooks() {
+  for (let i = books.length - 1; i >= 0; i--) {
+    let book = books[i];
+    book.y += 5;
+    book.x -= 5;
+    displayBook(book.x, book.y); 
+ 
+    if (book.y > height) {
+      books.splice(i, 1);
+      let x = random(400, 600);
+      let y = random(-200, 0);
+      books.push({ x: x, y: y });
+    }
+  }
+}
+
+//___________ ADDED TRYYYYYY
 
 function drawBigTable(x, y) {
   fill(73, 55, 76);
@@ -326,8 +366,8 @@ function updateCharacter() {
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
       if (
-        x + 70 > bigTable.x &&
-        x < bigTable.x + 250 &&
+        x  > bigTable.x &&
+        x  + 30< bigTable.x + 250 &&
         y + 391 > bigTable.y &&
         y + 268 < bigTable.y + 70
       ) {
@@ -336,6 +376,31 @@ function updateCharacter() {
         gravity = 0;
         x -= speed;
       }
+    }
+
+
+
+    
+
+
+    // when book collide with character
+    for (let i = 0; i < books.length; i++) {
+      let book = books[i];
+      if (
+        x + 51 > book.x &&
+        x + 51 < book.x + 60 &&
+        y + 391 > book.y &&
+        y + 282 < book.y + 30
+      ) {
+        x = 0;
+        y = -50;
+        console.log("Collision with book!");
+      }
+    }
+
+    if (y >= 400) {
+      gravity = 0;
+      y = 400;
     }
 
     // if (y >= 400) {
@@ -416,6 +481,7 @@ function gameScreen() {
   character();
   controls();
   updateCharacter();
+  updateBooks();
 }
 
 function resultScreen() {
@@ -434,3 +500,5 @@ function resultScreen() {
     text("Please Press Space To Restart", 300, 350);
   }
 }
+
+////// tryyyyyy
