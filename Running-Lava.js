@@ -151,12 +151,13 @@ function updateBooks() {
     let book = books[i];
     book.y += 5;
     book.x -= 5;
+
     displayBook(book.x, book.y);
 
     if (book.y > height) {
       books.splice(i, 1);
-      let x = random(400, 600);
-      let y = random(-200, 0);
+      let x = random(350, 690);
+      let y = random(0);
       books.push({ x: x, y: y });
     }
   }
@@ -405,21 +406,14 @@ function updateCharacter() {
         y + 282 < book.y + 30;
 
       if (bookCollide) {
-        //when book collide -1 life heart -----
+        //when book collide -1 health heart -----
         x = 0;
         y = 0;
-        book.x = random(400, 650);
-
-        book.y = 0;
-        i--;
+        book.x = random(350, 690);
+        book.y = -100;
+        // i--;
         gravityEnabled = true;
         lifeHearts.pop();
-
-        //here so when no life left = lose screen
-        if (lifeHearts.length === 0) {
-          screen = "result";
-          console.log("NO HEARTS LEFT");
-        }
 
         console.log("Collision with book!");
       }
@@ -527,6 +521,24 @@ function resultScreen() {
     textSize(29);
     text("You Crushed!", 250, 300);
     text("Please Press Space To Restart", 160, 350);
+  }
+
+  //here so when no health left = crash screen
+  if (lifeHearts.length === 0) {
+    gravity = 0;
+    screen = "result";
+    y = 300;
+    lavaX = 0;
+    character.y = 400;
+
+    console.log("crushed");
+    console.log(y);
+
+    fill(255);
+    textSize(29);
+    text("You Crushed!", 250, 300);
+    text("Please Press Space To Restart", 160, 350);
+    console.log("NO HEARTS LEFT");
   }
 }
 
