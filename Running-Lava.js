@@ -422,7 +422,7 @@ function gameScreen() {
 
   timer++;
 
-  if (timer === 500) {
+  if (timer === 1500) {
     displayFlag = true;
   }
 
@@ -447,7 +447,7 @@ function resultScreen() {
     text("You died!", 100, 300);
     text("Please Press Space To Restart", 100, 350);
   }
-  if (displayFlag === true && timer === 510) {
+  if (displayFlag === true && timer === 1510) {
     screen = "result";
     x = 650;
     lavaX = 0;
