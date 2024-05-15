@@ -64,6 +64,7 @@ let flagX = 0;
 let flagY = 0;
 let onTable = false;
 let books = [];
+let lifeHearts = [];
 
 function setup() {
   createCanvas(700, 600);
@@ -74,9 +75,9 @@ function setup() {
 
   background(234, 200, 135);
 
-  //book object with random position
+  //book loop
   for (let i = 0; i < 1; i++) {
-    let x = random(400, 600);
+    let x = random(400, 650);
     let y = random(200, 300);
     books.push({ x, y });
   }
@@ -99,6 +100,11 @@ function setup() {
     };
     bigTables.push(bigTable);
     bigTables.push(newBigTable);
+  }
+
+  //loop life hearts
+  for (let i = 0; i < 3; i++) {
+    lifeHearts.push({ x: 10 + i * 25, y: 17 });
   }
 }
 
@@ -125,20 +131,17 @@ function startScreen() {
 
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
-
-
 }
 
 //------------------- TRY!!!!//---------------------
 
-
 function displayBook(x, y) {
-  fill(150, 75, 0); 
+  fill(150, 75, 0);
   rect(x, y, 60, 30, 2);
-  fill(255); 
-  rect(x, y - 6, 60, 10, 2); 
-  fill(0); 
-  rect(x, y - 6, 5, 10, 2); 
+  fill(255);
+  rect(x, y - 6, 60, 10, 2);
+  fill(0);
+  rect(x, y - 6, 5, 10, 2);
 }
 
 /// READ THIS-------------------------------
@@ -148,8 +151,8 @@ function updateBooks() {
     let book = books[i];
     book.y += 5;
     book.x -= 5;
-    displayBook(book.x, book.y); 
- 
+    displayBook(book.x, book.y);
+
     if (book.y > height) {
       books.splice(i, 1);
       let x = random(400, 600);
@@ -321,6 +324,23 @@ function end() {
   }
 }
 
+// FOR THE LIFE HEARTS DRAWING AND DISPLAYING HERE-----
+function drawHeart(x, y) {
+  push();
+  fill(255, 0, 0);
+  noStroke();
+  triangle(x + 19, y + 17, x + 28, y + 31, x + 37, y + 16);
+  ellipse(x + 23, y + 13, 11);
+  ellipse(x + 32, y + 13, 11);
+
+  pop();
+}
+
+function displayHearts() {
+  for (let heart of lifeHearts) {
+    drawHeart(heart.x, heart.y);
+  }
+}
 // start game key pressed
 function keyPressed() {
   if (keyCode === 13 && screen === "start") {
@@ -360,8 +380,8 @@ function updateCharacter() {
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
       if (
-        x  > bigTable.x &&
-        x  + 30< bigTable.x + 250 &&
+        x > bigTable.x &&
+        x + 30 < bigTable.x + 250 &&
         y + 391 > bigTable.y &&
         y + 268 < bigTable.y + 70
       ) {
@@ -372,19 +392,35 @@ function updateCharacter() {
       }
     }
 
-    
-
     // when book collide with character
     for (let i = 0; i < books.length; i++) {
       let book = books[i];
-      if (
+
+      //make it if (bookCollide)
+
+      let bookCollide =
         x + 51 > book.x &&
         x + 51 < book.x + 60 &&
         y + 391 > book.y &&
-        y + 282 < book.y + 30
-      ) {
+        y + 282 < book.y + 30;
+
+      if (bookCollide) {
+        //when book collide -1 life heart -----
         x = 0;
-        y = -50;
+        y = 0;
+        book.x = random(400, 650);
+
+        book.y = 0;
+        i--;
+        gravityEnabled = true;
+        lifeHearts.pop();
+
+        //here so when no life left = lose screen
+        if (lifeHearts.length === 0) {
+          screen = "result";
+          console.log("NO HEARTS LEFT");
+        }
+
         console.log("Collision with book!");
       }
     }
@@ -396,6 +432,7 @@ function updateCharacter() {
 
     // if (y >= 400) {
     //   gravity = 0;
+
     //   y = 400;
     // }
 
@@ -426,7 +463,7 @@ function gameScreen() {
   lava(lavaX);
   sun();
 
-  // // Call new obstacles randomly
+  // Call new obstacles randomly
   if (frameCount % 100 === 0) {
     let rand = Math.floor(random(obstacleTypes.length));
     let newObstacle = new obstacleTypes[rand](
@@ -473,8 +510,8 @@ function gameScreen() {
   controls();
   updateCharacter();
   updateBooks();
+  displayHearts();
 }
-
 function resultScreen() {
   if (y >= 400) {
     gravity = 0;
@@ -493,6 +530,5 @@ function resultScreen() {
   }
 }
 
-////// tryyyyyy
-
-
+//so put the heart in an array so when book collide splice one from list
+//when book collide happens heart array -1
