@@ -1,56 +1,52 @@
-class Obstacle {
+class Debris {
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
-
-  display() {}
-}
-
-class LargeRock extends Obstacle {
-  display() {
-    fill(73, 55, 56);
-
-    beginShape();
-    vertex(this.x, this.y);
-    vertex(this.x - 33, this.y + 1);
-    vertex(this.x - 45, this.y + 14);
-    vertex(this.x - 61, this.y + 21);
-    vertex(this.x - 59, this.y + 35);
-    vertex(this.x - 39, this.y + 35);
-    vertex(this.x - 16, this.y + 26);
-    vertex(this.x - 14, this.y + 15);
-    vertex(this.x - 6, this.y + 14);
-
-    endShape(CLOSE);
-  }
-}
-
-class SmallRock extends Obstacle {
-  display() {
+  drawBigRock() {
     fill(73, 55, 56);
     beginShape();
-    vertex(this.x + 195, this.y + 191);
-    vertex(this.x + 162, this.y + 192);
-    vertex(this.x + 150, this.y + 205);
-    vertex(this.x + 134, this.y + 205);
-    vertex(this.x + 136, this.y + 219);
-    vertex(this.x + 156, this.y + 219);
-    vertex(this.x + 179, this.y + 210);
-    vertex(this.x + 181, this.y + 199);
-    vertex(this.x + 189, this.y + 198);
-
+    vertex(this.x, this.y + 50);
+    vertex(this.x - 33, this.y + 51);
+    vertex(this.x - 45, this.y + 64);
+    vertex(this.x - 61, this.y + 71);
+    vertex(this.x - 59, this.y + 85);
+    vertex(this.x - 39, this.y + 85);
+    vertex(this.x - 16, this.y + 76);
+    vertex(this.x - 14, this.y + 65);
+    vertex(this.x - 6, this.y + 64);
     endShape(CLOSE);
   }
+  drawSmallRock() {
+    fill(73, 55, 56);
+    beginShape();
+    vertex(this.x + 195, this.y + 161);
+    vertex(this.x + 162, this.y + 162);
+    vertex(this.x + 150, this.y + 175);
+    vertex(this.x + 134, this.y + 175);
+    vertex(this.x + 136, this.y + 189);
+    vertex(this.x + 156, this.y + 189);
+    vertex(this.x + 179, this.y + 180);
+    vertex(this.x + 181, this.y + 169);
+    vertex(this.x + 189, this.y + 168);
+    endShape(CLOSE);
+  }
+  update() {
+    this.x -= 5;
+
+    if (this.x <= -200) {
+      this.x = 700;
+      this.x -= 5;
+    }
+  }
 }
+let debris = new Debris(700, 420);
 
 let imag3;
 let screen = "start";
 let gameStarted = false;
 let bigTables = [];
 let lavaX = 0;
-let obstacle = [];
-let obstacleTypes = [LargeRock, SmallRock];
 let x = 0;
 let y = -50;
 let gravity = 15;
@@ -63,8 +59,6 @@ let timer = 0;
 // let flagX = 0;
 // let flagY = 0;
 let onTable = false;
-let books = [];
-let lifeHearts = [];
 
 function setup() {
   createCanvas(700, 600);
@@ -75,35 +69,20 @@ function setup() {
 
   background(234, 200, 135);
 
-  // Create obstacles
-  obstacle.push(new LargeRock(Math.floor(700), Math.floor(420)));
-  obstacle.push(new SmallRock(Math.floor(700), Math.floor(420)));
-
   // Create big tables
   for (let i = 0; i < 1; i++) {
-    const bigTable = {
+    let bigTable1 = {
       x: 150,
       y: 400,
       alpha: Math.random(),
     };
-    const newBigTable = {
+    let bigTable2 = {
       x: 600,
       y: 400,
       alpha: Math.random(),
     };
-    bigTables.push(bigTable);
-    bigTables.push(newBigTable);
-  }
-
-  //book loop
-  for (let i = 0; i < 1; i++) {
-    let x = random(400, 650);
-    let y = random(200, 300);
-    books.push({ x, y });
-  }
-  //loop life hearts
-  for (let i = 0; i < 3; i++) {
-    lifeHearts.push({ x: 10 + i * 25, y: 17 });
+    bigTables.push(bigTable1);
+    bigTables.push(bigTable2);
   }
 }
 
@@ -130,36 +109,14 @@ function startScreen() {
 
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
-}
 
-//------------------- TRY!!!!//---------------------
-
-function displayBook(x, y) {
-  fill(150, 75, 0);
-  rect(x, y, 60, 30, 2);
-  fill(255);
-  rect(x, y - 6, 60, 10, 2);
+  //START button
   fill(0);
-  rect(x, y - 6, 5, 10, 2);
-}
-
-/// READ THIS-------------------------------
-
-function updateBooks() {
-  for (let i = books.length - 1; i >= 0; i--) {
-    let book = books[i];
-    book.y += 5;
-    book.x -= 5;
-
-    displayBook(book.x, book.y);
-
-    if (book.y > height) {
-      books.splice(i, 1);
-      let x = random(350, 690);
-      let y = random(0);
-      books.push({ x: x, y: y });
-    }
-  }
+  rect(201, 309, 319, 70, 50);
+  textSize(24);
+  fill(245);
+  textFont("sans-serif");
+  text("Press ENTER to Start", 244, 350);
 }
 
 function drawBigTable(x, y) {
@@ -322,24 +279,6 @@ function end() {
   }
 }
 
-// FOR THE LIFE HEARTS DRAWING AND DISPLAYING HERE-----
-function drawHeart(x, y) {
-  push();
-  fill(255, 0, 0);
-  noStroke();
-  triangle(x + 19, y + 17, x + 28, y + 31, x + 37, y + 16);
-  ellipse(x + 23, y + 13, 11);
-  ellipse(x + 32, y + 13, 11);
-
-  pop();
-}
-
-function displayHearts() {
-  for (let heart of lifeHearts) {
-    drawHeart(heart.x, heart.y);
-  }
-}
-
 // start game key pressed
 function keyPressed() {
   if (keyCode === 13 && screen === "start") {
@@ -398,37 +337,6 @@ function updateCharacter() {
       }
     }
 
-    // when book collide with character
-    for (let i = 0; i < books.length; i++) {
-      let book = books[i];
-
-      //make it if (bookCollide)
-
-      let bookCollide =
-        x + 51 > book.x &&
-        x + 51 < book.x + 60 &&
-        y + 391 > book.y &&
-        y + 282 < book.y + 30;
-
-      if (bookCollide) {
-        //when book collide -1 health heart -----
-        x = 0;
-        y = 0;
-        book.x = random(350, 690);
-        book.y = -100;
-        // i--;
-        gravityEnabled = true;
-        lifeHearts.pop();
-
-        console.log("Collision with book!");
-      }
-    }
-
-    if (y >= 400) {
-      gravity = 0;
-      y = 400;
-    }
-
     // if (!onTable) {
     //   gravityEnabled = true;
     //   gravity = 15;
@@ -448,6 +356,7 @@ function updateCharacter() {
 }
 
 function gameScreen() {
+  clear();
   background(234, 200, 135);
 
   windows(40);
@@ -468,26 +377,9 @@ function gameScreen() {
   lava(lavaX);
   sun();
 
-  // Call new obstacles randomly
-  if (frameCount % 100 === 0) {
-    let rand = Math.floor(random(obstacleTypes.length));
-    let newObstacle = new obstacleTypes[rand](
-      700,
-      Math.floor(Math.random() * 130) + 420
-    );
-    obstacle.push(newObstacle);
-  }
-
-  for (let i = obstacle.length - 1; i >= 0; i--) {
-    let obj = obstacle[i];
-    obj.display();
-    obj.x -= 5;
-
-    // Remove obstacles
-    if (obj.x < -250) {
-      obstacle.splice(i, 1);
-    }
-  }
+  debris.drawBigRock();
+  debris.drawSmallRock();
+  debris.update();
 
   for (let i = bigTables.length - 1; i >= 0; i--) {
     let bigTable = bigTables[i];
@@ -514,8 +406,6 @@ function gameScreen() {
   character();
   controls();
   updateCharacter();
-  updateBooks();
-  displayHearts();
 }
 
 function resultScreen() {
@@ -533,25 +423,6 @@ function resultScreen() {
     text("You died!", 100, 300);
     text("Please Press Space To Restart", 100, 350);
   }
-
-  //here so when no health left = crash screen
-  if (lifeHearts.length === 0) {
-    gravity = 0;
-    screen = "result";
-    y = 300;
-    lavaX = 0;
-    character.y = 400;
-
-    console.log("crushed");
-    console.log(y);
-
-    fill(255);
-    textSize(29);
-    text("You Crushed!", 250, 300);
-    text("Please Press Space To Restart", 160, 350);
-    console.log("NO HEARTS LEFT");
-  }
-
   if (displayFlag === true && timer === 1510) {
     screen = "result";
     x = 650;
