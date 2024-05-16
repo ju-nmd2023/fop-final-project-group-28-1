@@ -31,6 +31,7 @@ class Debris {
     vertex(this.x + 189, this.y + 168);
     endShape(CLOSE);
   }
+  drawBook() {}
   update() {
     this.x -= 5;
 
@@ -40,6 +41,7 @@ class Debris {
     }
   }
 }
+
 let debris = new Debris(700, 420);
 
 let imag3;
@@ -293,12 +295,12 @@ function keyPressed() {
 function controls() {
   if (keyIsDown(32) || keyIsDown(38)) {
     y -= 10;
-    x += 6;
     gravityEnabled = true;
   } else if (keyIsDown(39)) {
     x += 5;
     gravityEnabled = true;
-  } else if (keyIsDown(37)) {
+  }
+  if (keyIsDown(37)) {
     x -= 5;
     gravityEnabled = true;
   } else if (keyIsDown(40)) {
@@ -379,6 +381,7 @@ function gameScreen() {
 
   debris.drawBigRock();
   debris.drawSmallRock();
+  debris.drawBook();
   debris.update();
 
   for (let i = bigTables.length - 1; i >= 0; i--) {
