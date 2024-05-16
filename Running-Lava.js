@@ -45,6 +45,7 @@ class SmallRock extends Obstacle {
 }
 
 let imag3;
+let imag4;
 let screen = "start";
 let gameStarted = false;
 let bigTables = [];
@@ -110,6 +111,7 @@ function setup() {
 //Start screen image
 function preload() {
   imag3 = loadImage("gamescreendesign.png");
+  imag4 = loadImage("lostscreen.png");
 }
 
 function draw() {
@@ -325,7 +327,7 @@ function end() {
 // FOR THE LIFE HEARTS DRAWING AND DISPLAYING HERE-----
 function drawHeart(x, y) {
   push();
-  fill(255, 0, 0);
+  fill(170, 51, 106);
   noStroke();
   triangle(x + 19, y + 17, x + 28, y + 31, x + 37, y + 16);
   ellipse(x + 23, y + 13, 11);
@@ -346,13 +348,13 @@ function keyPressed() {
     screen = "game";
     gameStarted = true;
   }
-  if (keyCode === 13 && screen === "result") {
+  if (keyCode === 32 && screen === "result") {
     resetGame();
   }
 }
 
 function controls() {
-  if (keyIsDown(32) || keyIsDown(38)) {
+  if (keyIsDown(38)) {
     y -= 10;
     x += 6;
     gravityEnabled = true;
@@ -371,7 +373,6 @@ function controls() {
 function updateCharacter() {
   if (gravityEnabled) {
     gravity = gravity + acceleration;
-
     y += gravity;
 
     // if (onTable) {
@@ -412,12 +413,11 @@ function updateCharacter() {
 
       if (bookCollide) {
         //when book collide -1 health heart -----
-        x = 0;
-        y = 0;
+
         book.x = random(350, 690);
         book.y = -100;
         // i--;
-        gravityEnabled = true;
+        // gravityEnabled = true;
         lifeHearts.pop();
 
         console.log("Collision with book!");
@@ -426,7 +426,9 @@ function updateCharacter() {
 
     if (y >= 400) {
       gravity = 0;
-      y = 400;
+      x = 0;
+      y = -50;
+      lifeHearts.pop();
     }
 
     // if (!onTable) {
@@ -519,20 +521,21 @@ function gameScreen() {
 }
 
 function resultScreen() {
-  if (y >= 400) {
-    gravity = 0;
-    screen = "result";
-    y = 300;
-    lavaX = 0;
+  // if (y >= 400) {
+  //   gravity = 0;
+  //   x = 0;
+  //   y = -50;
+  //   y = 300;
+  //   lavaX = 0;
+  //   lifeHearts.pop();
+  //   console.log("crushed");
+  //   console.log(y);
 
-    console.log("crushed");
-    console.log(y);
-
-    fill(255);
-    textSize(40);
-    text("You died!", 100, 300);
-    text("Please Press Space To Restart", 100, 350);
-  }
+  //   fill(255);
+  //   textSize(40);
+  //   text("You died!", 100, 300);
+  //   text("Please Press Space To Restart", 100, 350);
+  // }
 
   //here so when no health left = crash screen
   if (lifeHearts.length === 0) {
@@ -544,11 +547,11 @@ function resultScreen() {
 
     console.log("crushed");
     console.log(y);
-
-    fill(255);
-    textSize(29);
-    text("You Crushed!", 250, 300);
-    text("Please Press Space To Restart", 160, 350);
+    image(imag4, 0, 0, 700, 600);
+    // fill(255, 0, 0);
+    // textSize(29);
+    // text("0 health :( ", 250, 300);
+    // text("Please Press Space To Restart", 160, 350);
     console.log("NO HEARTS LEFT");
   }
 
