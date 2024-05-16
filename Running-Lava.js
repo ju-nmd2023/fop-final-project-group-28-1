@@ -295,6 +295,7 @@ function keyPressed() {
 function controls() {
   if (keyIsDown(32) || keyIsDown(38)) {
     y -= 10;
+    x += 5;
     gravityEnabled = true;
   } else if (keyIsDown(39)) {
     x += 5;
@@ -331,11 +332,10 @@ function updateCharacter() {
         // console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
-        acceleration = 0;
+        //acceleration = 0;
+        y = bigTable.y - 391;
         console.log(y);
         x -= speed;
-      } else {
-        acceleration = 1; // If no collision, character is off the table
       }
     }
 
