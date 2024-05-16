@@ -46,6 +46,8 @@ class SmallRock extends Obstacle {
 
 let imag3;
 let imag4;
+
+let imag5;
 let screen = "start";
 let gameStarted = false;
 let bigTables = [];
@@ -112,6 +114,7 @@ function setup() {
 function preload() {
   imag3 = loadImage("gamescreendesign.png");
   imag4 = loadImage("lostscreen.png");
+  imag5 = loadImage("wonscreen.png");
 }
 
 function draw() {
@@ -235,7 +238,6 @@ function smallShelf(x) {
   rect(x + 110, 407, 15, 35);
   rect(x + 130, 407, 15, 35);
 }
-
 function shelf(x, y) {
   rect(x, y, 80, 40);
   rect(x + 5, y + 5, 10, 30);
@@ -563,11 +565,12 @@ function resultScreen() {
 
     console.log("won");
     console.log(y);
+    image(imag5, 0, 0, 700, 600);
 
-    fill(255);
-    textSize(40);
-    text("You Won!", 100, 300);
-    text("Please Press Space To Restart", 100, 350);
+    // fill(255);
+    // textSize(40);
+    // text("You Won!", 100, 300);
+    // text("Please Press Space To Restart", 100, 350);
   }
 }
 
