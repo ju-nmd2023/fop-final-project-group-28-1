@@ -85,27 +85,27 @@ function setup() {
   for (let i = 0; i < 3; i++) {
     lifeHearts.push({ x: 10 + i * 25, y: 17 });
   }
-}
-// Create big tables
-for (let i = 0; i < 1; i++) {
-  let bigTable1 = {
-    x: 150,
-    y: 400,
-    alpha: Math.random(),
-  };
-  let bigTable2 = {
-    x: 600,
-    y: 400,
-    alpha: Math.random(),
-  };
-  bigTables.push(bigTable1);
-  bigTables.push(bigTable2);
+  // Create big tables
+  for (let i = 0; i < 1; i++) {
+    let bigTable1 = {
+      x: 150,
+      y: 400,
+      alpha: Math.random(),
+    };
+    let bigTable2 = {
+      x: 600,
+      y: 400,
+      alpha: Math.random(),
+    };
+    bigTables.push(bigTable1);
+    bigTables.push(bigTable2);
+  }
 }
 
 //Start screen image
 function preload() {
   imag3 = loadImage("gamescreendesign.png");
-  imag4 = loadImage("lostscrenn.png");
+  imag4 = loadImage("lostscreen.png");
   imag5 = loadImage("wonscreen.png");
 }
 
@@ -352,7 +352,7 @@ function keyPressed() {
     screen = "game";
     gameStarted = true;
   }
-  if (keyCode === 13 && screen === "result") {
+  if (keyCode === 32 && screen === "result") {
     resetGame();
   }
 }
@@ -531,12 +531,12 @@ function resultScreen() {
   if (lifeHearts.length === 0) {
     gravity = 0;
     screen = "result";
-    y = 300;
+    y = 400;
     lavaX = 0;
-    character.y = 400;
 
     console.log("crushed");
     console.log(y);
+    console.log(lifeHearts);
     image(imag4, 0, 0, 700, 600);
     // fill(255, 0, 0);
     // textSize(29);
@@ -568,11 +568,50 @@ function resetGame() {
   timer = 0;
   gravity = 15;
   acceleration = 1;
-  screen = "game";
+  screen = "start";
   gravityEnabled = false;
   speed = 5;
   displayFlag = false;
   bigTables = [];
   books = [];
   lifeHearts = [];
+
+  //book loop
+  for (let i = 0; i < 1; i++) {
+    let x = random(400, 650);
+    let y = random(200, 300);
+    books.push({ x, y });
+  }
+  //loop life hearts
+  for (let i = 0; i < 3; i++) {
+    lifeHearts.push({ x: 10 + i * 25, y: 17 });
+  }
+
+  for (let i = 0; i < 1; i++) {
+    let bigTable1 = {
+      x: 150,
+      y: 400,
+      alpha: Math.random(),
+    };
+    let bigTable2 = {
+      x: 600,
+      y: 400,
+      alpha: Math.random(),
+    };
+    bigTables.push(bigTable1);
+    bigTables.push(bigTable2);
+  }
+
+  // for (let i = bigTables.length - 1; i >= 0; i--) {
+  //   let bigTable = bigTables[i];
+  //   drawBigTable(bigTable.x, bigTable.y);
+
+  //   bigTable.x -= speed;
+  //   speed += 0.009;
+
+  //   if (bigTable.x + 280 <= 0) {
+  //     bigTable.x = 650;
+  //     bigTable.y = 400;
+  //   }
+  // }
 }
