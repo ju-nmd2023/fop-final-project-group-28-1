@@ -45,6 +45,8 @@ class Debris {
 let debris = new Debris(700, 420);
 
 let imag3;
+let imag4;
+let imag5;
 let screen = "start";
 let gameStarted = false;
 let bigTables = [];
@@ -61,6 +63,8 @@ let timer = 0;
 // let flagX = 0;
 // let flagY = 0;
 let onTable = false;
+let books = [];
+let lifeHearts = [];
 
 function setup() {
   createCanvas(700, 600);
@@ -71,26 +75,38 @@ function setup() {
 
   background(234, 200, 135);
 
-  // Create big tables
+  //book loop
   for (let i = 0; i < 1; i++) {
-    let bigTable1 = {
-      x: 150,
-      y: 400,
-      alpha: Math.random(),
-    };
-    let bigTable2 = {
-      x: 600,
-      y: 400,
-      alpha: Math.random(),
-    };
-    bigTables.push(bigTable1);
-    bigTables.push(bigTable2);
+    let x = random(400, 650);
+    let y = random(200, 300);
+    books.push({ x, y });
   }
+  //loop life hearts
+  for (let i = 0; i < 3; i++) {
+    lifeHearts.push({ x: 10 + i * 25, y: 17 });
+  }
+}
+// Create big tables
+for (let i = 0; i < 1; i++) {
+  let bigTable1 = {
+    x: 150,
+    y: 400,
+    alpha: Math.random(),
+  };
+  let bigTable2 = {
+    x: 600,
+    y: 400,
+    alpha: Math.random(),
+  };
+  bigTables.push(bigTable1);
+  bigTables.push(bigTable2);
 }
 
 //Start screen image
 function preload() {
   imag3 = loadImage("gamescreendesign.png");
+  imag4 = loadImage("lostscrenn.png");
+  imag5 = loadImage("wonscreen.png");
 }
 
 function draw() {
@@ -140,6 +156,55 @@ function drawBigTable(x, y) {
   line(x + 37, y + 20, x + 28, y + 27);
   line(x + 41, y + 22, x + 31, y + 30);
   line(x + 45, y + 25, x + 35, y + 33);
+}
+
+//------------------- TRY!!!!//---------------------
+
+function displayBook(x, y) {
+  fill(150, 75, 0);
+  rect(x, y, 60, 30, 2);
+  fill(255);
+  rect(x, y - 6, 60, 10, 2);
+  fill(0);
+  rect(x, y - 6, 5, 10, 2);
+}
+
+/// READ THIS-------------------------------
+
+function updateBooks() {
+  for (let i = 0; i < books.length; i++) {
+    let book = books[i];
+    book.y += 10;
+    book.x -= 10;
+
+    displayBook(book.x, book.y);
+
+    if (book.y > height) {
+      books.splice(i, 1);
+      i--;
+      let x = random(350, 690);
+      let y = random(0);
+      books.push({ x: x, y: y });
+    }
+  }
+}
+
+// FOR THE LIFE HEARTS DRAWING AND DISPLAYING HERE-----
+function drawHeart(x, y) {
+  push();
+  fill(170, 51, 106);
+  noStroke();
+  triangle(x + 19, y + 17, x + 28, y + 31, x + 37, y + 16);
+  ellipse(x + 23, y + 13, 11);
+  ellipse(x + 32, y + 13, 11);
+
+  pop();
+}
+
+function displayHearts() {
+  for (let heart of lifeHearts) {
+    drawHeart(heart.x, heart.y);
+  }
 }
 
 function windows(x) {
@@ -339,6 +404,38 @@ function updateCharacter() {
       }
     }
 
+    // when book collide with character
+    for (let i = 0; i < books.length; i++) {
+      let book = books[i];
+
+      //make it if (bookCollide)
+
+      let bookCollide =
+        x + 51 > book.x &&
+        x + 51 < book.x + 60 &&
+        y + 391 > book.y &&
+        y + 282 < book.y + 30;
+
+      if (bookCollide) {
+        //when book collide -1 health heart -----
+
+        book.x = random(350, 690);
+        book.y = -100;
+        // i--;
+        // gravityEnabled = true;
+        lifeHearts.pop();
+
+        console.log("Collision with book!");
+      }
+    }
+
+    if (y >= 400) {
+      gravity = 0;
+      x = 0;
+      y = -50;
+      lifeHearts.pop();
+    }
+
     // if (!onTable) {
     //   gravityEnabled = true;
     //   gravity = 15;
@@ -409,23 +506,45 @@ function gameScreen() {
   character();
   controls();
   updateCharacter();
+  updateBooks();
+  displayHearts();
 }
 
 function resultScreen() {
-  if (y >= 400) {
+  // if (y >= 400) {
+  //   gravity = 0;
+  //   x = 0;
+  //   y = -50;
+  //   y = 300;
+  //   lavaX = 0;
+  //   lifeHearts.pop();
+  //   console.log("crushed");
+  //   console.log(y);
+
+  //   fill(255);
+  //   textSize(40);
+  //   text("You died!", 100, 300);
+  //   text("Please Press Space To Restart", 100, 350);
+  // }
+
+  //here so when no health left = crash screen
+  if (lifeHearts.length === 0) {
     gravity = 0;
     screen = "result";
     y = 300;
     lavaX = 0;
+    character.y = 400;
 
     console.log("crushed");
     console.log(y);
-
-    fill(255);
-    textSize(40);
-    text("You died!", 100, 300);
-    text("Please Press Space To Restart", 100, 350);
+    image(imag4, 0, 0, 700, 600);
+    // fill(255, 0, 0);
+    // textSize(29);
+    // text("0 health :( ", 250, 300);
+    // text("Please Press Space To Restart", 160, 350);
+    console.log("NO HEARTS LEFT");
   }
+
   if (displayFlag === true && timer === 1510) {
     screen = "result";
     x = 650;
@@ -434,11 +553,12 @@ function resultScreen() {
 
     console.log("won");
     console.log(y);
+    image(imag5, 0, 0, 700, 600);
 
-    fill(255);
-    textSize(40);
-    text("You Won!", 100, 300);
-    text("Please Press Space To Restart", 100, 350);
+    // fill(255);
+    // textSize(40);
+    // text("You Won!", 100, 300);
+    // text("Please Press Space To Restart", 100, 350);
   }
 }
 
@@ -451,4 +571,8 @@ function resetGame() {
   screen = "game";
   gravityEnabled = false;
   speed = 5;
+  displayFlag = false;
+  bigTables = [];
+  books = [];
+  lifeHearts = [];
 }
