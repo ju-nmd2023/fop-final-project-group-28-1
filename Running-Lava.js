@@ -17,6 +17,7 @@ class Debris {
     vertex(this.x - 6, this.y + 64);
     endShape(CLOSE);
   }
+
   drawSmallRock() {
     fill(73, 55, 56);
     beginShape();
@@ -127,14 +128,6 @@ function startScreen() {
 
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
-
-  //START button
-  fill(0);
-  rect(201, 309, 319, 70, 50);
-  textSize(24);
-  fill(245);
-  textFont("sans-serif");
-  text("Press ENTER to Start", 244, 350);
 }
 
 function drawBigTable(x, y) {
@@ -174,8 +167,8 @@ function displayBook(x, y) {
 function updateBooks() {
   for (let i = 0; i < books.length; i++) {
     let book = books[i];
-    book.y += 10;
-    book.x -= 10;
+    book.y += speed;
+    book.x -= speed;
 
     displayBook(book.x, book.y);
 
