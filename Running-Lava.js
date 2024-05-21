@@ -71,7 +71,21 @@ class Debris {
     vertex(this.x + 189, this.y + 168);
     endShape(CLOSE);
   }
-  drawBook() {}
+  drawBook() {
+    fill(150, 75, 0);
+    rect(this.x + 400, this.y + 96, 60, 30, 2);
+    fill(255);
+    rect(this.x + 400, this.y + 90, 60, 10, 2);
+    fill(0);
+    rect(this.x + 400, this.y + 90, 5, 10, 2);
+  }
+  drawPen() {
+    fill(0, 0, 0);
+    rect(this.x + 600, this.y + 50, 40, 5, 5);
+    rect(this.x + 620, this.y + 55, 20, 3, 5);
+    fill(255, 255, 255);
+    rect(this.x + 640, this.y + 50, 5, 5);
+  }
   update() {
     this.x -= 5;
 
@@ -152,12 +166,33 @@ function preload() {
 function draw() {
   if (screen === "start") {
     startScreen();
-  } else if (screen === "game") {
-    gameScreen();
+  } else if (screen === "level1") {
+    level1();
+    controls();
+    resultScreen();
+  } else if (screen === "level2") {
+    level2();
+    controls();
+    resultScreen();
+  } else if (screen === "level3") {
+    level3();
     controls();
     resultScreen();
   } else if (screen === "result") {
     resultScreen();
+  }
+}
+
+function mousePressed() {
+  if (mouseIsPressed) {
+    if (easyButton.hitTest(mouseX, mouseY)) {
+      level1();
+      gameStarted = true;
+    } else if (mediumButton.hitTest(mouseX, mouseY)) {
+      level2();
+    } else if (hardButton.hitTest(mouseX, mouseY)) {
+      level3();
+    }
   }
 }
 
@@ -385,15 +420,6 @@ function keyPressed() {
   }
 }
 
-function mousePressed() {
-  if (mouseIsPressed) {
-    if (easyButton.hitTest(mouseX, mouseY)) {
-      screen = "game";
-      gameStarted = true;
-    } else if (mediumButton.hitTest(mouseX, mouseY)) background(128, 123, 0);
-  }
-}
-
 function controls() {
   if (keyIsDown(32) || keyIsDown(38)) {
     y -= 10;
@@ -493,6 +519,71 @@ function updateCharacter() {
   }
 }
 
+function level1() {
+  gameScreen();
+  screen = "level1";
+
+  for (let i = bigTables.length - 1; i >= 0; i--) {
+    let bigTable = bigTables[i];
+    drawBigTable(bigTable.x, bigTable.y);
+
+    bigTable.x -= speed;
+    speed += 0.0005;
+
+    if (bigTable.x + 280 <= 0) {
+      bigTable.x = 650;
+      bigTable.y = 400;
+    }
+  }
+
+  startGround();
+  character();
+}
+
+function level2() {
+  gameScreen();
+  screen = "level2";
+
+  for (let i = bigTables.length - 1; i >= 0; i--) {
+    let bigTable = bigTables[i];
+    drawBigTable(bigTable.x, bigTable.y);
+
+    bigTable.x -= speed;
+    speed += 0.0009;
+
+    if (bigTable.x + 280 <= 0) {
+      bigTable.x = 650;
+      bigTable.y = 400;
+    }
+  }
+
+  updateBooks();
+  startGround();
+  character();
+}
+
+function level3() {
+  gameScreen();
+  screen = "level3";
+
+  for (let i = bigTables.length - 1; i >= 0; i--) {
+    let bigTable = bigTables[i];
+    drawBigTable(bigTable.x, bigTable.y);
+
+    bigTable.x -= speed;
+    speed += 0.005;
+
+    if (bigTable.x + 280 <= 0) {
+      bigTable.x = 650;
+      bigTable.y = 400;
+    }
+  }
+
+  updateBooks();
+  startGround();
+  character();
+}
+
 function gameScreen() {
   clear();
   background(234, 200, 135);
@@ -518,34 +609,19 @@ function gameScreen() {
   debris.drawBigRock();
   debris.drawSmallRock();
   debris.drawBook();
+  debris.drawPen();
   debris.update();
-
-  for (let i = bigTables.length - 1; i >= 0; i--) {
-    let bigTable = bigTables[i];
-    drawBigTable(bigTable.x, bigTable.y);
-
-    bigTable.x -= speed;
-    speed += 0.009;
-
-    if (bigTable.x + 280 <= 0) {
-      bigTable.x = 650;
-      bigTable.y = 400;
-    }
-  }
 
   end();
 
-  // timer++;
+  timer++;
 
-  // if (timer === 1500) {
-  //   displayFlag = true;
-  // }
+  if (timer === 1500) {
+    displayFlag = true;
+  }
 
-  startGround();
-  character();
   controls();
   updateCharacter();
-  updateBooks();
   displayHearts();
 }
 
