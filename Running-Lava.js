@@ -1,3 +1,42 @@
+class Button {
+  constructor(x, y, width, height, text) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.text = text;
+  }
+  buttons() {
+    push();
+    translate(this.x, this.y);
+    stroke(0);
+    strokeWeight(2);
+    fill(255);
+    rect(0, 0, this.width, this.height, this.height / 2);
+
+    //text
+    noStroke();
+    fill(129, 20, 255);
+    textSize(this.height / 2);
+    textAlign(CENTER);
+    text(this.text, 0, this.height / 4, this.width);
+
+    pop();
+  }
+
+  hitTest(x, y) {
+    return (
+      x > this.x &&
+      x < this.x + this.width &&
+      y > this.y &&
+      y < this.y + this.height
+    );
+  }
+}
+let easyButton = new Button(240, 300, 80, 40, "Lv1");
+let mediumButton = new Button(340, 300, 80, 40, "Lv2");
+let hardButton = new Button(440, 300, 80, 40, "Lv3");
+
 class Debris {
   constructor(x, y) {
     this.x = x;
@@ -128,6 +167,11 @@ function startScreen() {
 
   //GAME NAME
   image(imag3, 0, 0, 700, 600);
+
+  //BUTTON
+  easyButton.buttons();
+  mediumButton.buttons();
+  hardButton.buttons();
 }
 
 function drawBigTable(x, y) {
@@ -305,15 +349,6 @@ function startGround() {
   pop();
 }
 
-/*
-function character() {
-fill(0, 0, 0);
-triangle(10, 370, 50, 250, 90, 370);
-ellipse(50, 230, 35);
-triangle(25, 370, 35, 420, 45, 370);
-triangle(55, 370, 65, 420, 75, 370);
-}*/
-
 //smaller
 function character() {
   fill(0, 0, 0);
@@ -341,12 +376,21 @@ function end() {
 
 // start game key pressed
 function keyPressed() {
-  if (keyCode === 13 && screen === "start") {
-    screen = "game";
-    gameStarted = true;
-  }
+  // if (keyCode === 13 && screen === "start") {
+  //   screen = "game";
+  //   gameStarted = true;
+  // }
   if (keyCode === 32 && screen === "result") {
     resetGame();
+  }
+}
+
+function mousePressed() {
+  if (mouseIsPressed) {
+    if (easyButton.hitTest(mouseX, mouseY)) {
+      screen = "game";
+      gameStarted = true;
+    } else if (mediumButton.hitTest(mouseX, mouseY)) background(128, 123, 0);
   }
 }
 
@@ -381,12 +425,14 @@ function updateCharacter() {
 
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
-      if (
+
+      let tableCollide =
         x > bigTable.x &&
         x + 30 < bigTable.x + 250 &&
         y + 391 > bigTable.y &&
-        y + 268 < bigTable.y + 70
-      ) {
+        y + 268 < bigTable.y + 70;
+
+      if (tableCollide) {
         // console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
@@ -489,11 +535,11 @@ function gameScreen() {
 
   end();
 
-  timer++;
+  // timer++;
 
-  if (timer === 1500) {
-    displayFlag = true;
-  }
+  // if (timer === 1500) {
+  //   displayFlag = true;
+  // }
 
   startGround();
   character();
@@ -531,11 +577,6 @@ function resultScreen() {
     console.log(y);
     console.log(lifeHearts);
     image(imag4, 0, 0, 700, 600);
-    // fill(255, 0, 0);
-    // textSize(29);
-    // text("0 health :( ", 250, 300);
-    // text("Please Press Space To Restart", 160, 350);
-    console.log("NO HEARTS LEFT");
   }
 
   if (displayFlag === true && timer === 1510) {
@@ -594,7 +635,6 @@ function resetGame() {
     bigTables.push(bigTable1);
     bigTables.push(bigTable2);
   }
-
   // for (let i = bigTables.length - 1; i >= 0; i--) {
   //   let bigTable = bigTables[i];
   //   drawBigTable(bigTable.x, bigTable.y);
