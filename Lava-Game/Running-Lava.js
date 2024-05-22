@@ -119,6 +119,7 @@ let timer = 0;
 let onTable = false;
 let books = [];
 let lifeHearts = [];
+let book = false;
 
 function setup() {
   createCanvas(700, 600);
@@ -245,19 +246,21 @@ function displayBook(x, y) {
 /// READ THIS-------------------------------
 
 function updateBooks() {
-  for (let i = 0; i < books.length; i++) {
-    let book = books[i];
-    book.y += speed;
-    book.x -= speed;
+  if (book) {
+    for (let i = 0; i < books.length; i++) {
+      let book = books[i];
+      book.y += speed;
+      book.x -= speed;
 
-    displayBook(book.x, book.y);
+      displayBook(book.x, book.y);
 
-    if (book.y > height) {
-      books.splice(i, 1);
-      i--;
-      let x = random(350, 690);
-      let y = random(0);
-      books.push({ x: x, y: y });
+      if (book.y > height) {
+        books.splice(i, 1);
+        i--;
+        let x = random(350, 690);
+        let y = random(0);
+        books.push({ x: x, y: y });
+      }
     }
   }
 }
@@ -459,27 +462,27 @@ function updateCharacter() {
     }
 
     // when book collide with character
-    for (let i = 0; i < books.length; i++) {
-      let book = books[i];
+    // for (let i = 0; i < books.length; i++) {
+    //   let book = books[i];
 
-      //make it if (bookCollide)
+    //   //make it if (bookCollide)
 
-      let bookCollide =
-        x + 51 > book.x &&
-        x + 51 < book.x + 60 &&
-        y + 391 > book.y &&
-        y + 282 < book.y + 30;
+    //   let bookCollide =
+    //     x + 51 > book.x &&
+    //     x + 51 < book.x + 60 &&
+    //     y + 391 > book.y &&
+    //     y + 282 < book.y + 30;
 
-      if (bookCollide) {
-        //when book collide -1 health heart -----
+    //   if (bookCollide) {
+    //     //when book collide -1 health heart -----
 
-        book.x = random(350, 690);
-        book.y = -100;
-        lifeHearts.pop();
+    //     book.x = random(350, 690);
+    //     book.y = -100;
+    //     lifeHearts.pop();
 
-        console.log("Collision with book!");
-      }
-    }
+    //     console.log("Collision with book!");
+    //   }
+    // }
 
     if (y >= 400) {
       gravity = 0;
@@ -514,6 +517,7 @@ function level1() {
 function level2() {
   gameScreen();
   screen = "level2";
+  book = true;
 
   for (let i = bigTables.length - 1; i >= 0; i--) {
     let bigTable = bigTables[i];
@@ -526,6 +530,28 @@ function level2() {
       bigTable.x = 650;
       bigTable.y = 400;
     }
+
+    for (let i = 0; i < books.length; i++) {
+      let book = books[i];
+
+      //make it if (bookCollide)
+
+      let bookCollide =
+        x + 51 > book.x &&
+        x + 51 < book.x + 60 &&
+        y + 391 > book.y &&
+        y + 282 < book.y + 30;
+
+      if (bookCollide) {
+        //when book collide -1 health heart -----
+
+        book.x = random(350, 690);
+        book.y = -100;
+        lifeHearts.pop();
+
+        console.log("Collision with book!");
+      }
+    }
   }
 
   updateBooks();
@@ -536,6 +562,7 @@ function level2() {
 function level3() {
   gameScreen();
   screen = "level3";
+  book = true;
 
   for (let i = bigTables.length - 1; i >= 0; i--) {
     let bigTable = bigTables[i];
@@ -547,6 +574,28 @@ function level3() {
     if (bigTable.x + 280 <= 0) {
       bigTable.x = 650;
       bigTable.y = 400;
+    }
+
+    for (let i = 0; i < books.length; i++) {
+      let book = books[i];
+
+      //make it if (bookCollide)
+
+      let bookCollide =
+        x + 51 > book.x &&
+        x + 51 < book.x + 60 &&
+        y + 391 > book.y &&
+        y + 282 < book.y + 30;
+
+      if (bookCollide) {
+        //when book collide -1 health heart -----
+
+        book.x = random(350, 690);
+        book.y = -100;
+        lifeHearts.pop();
+
+        console.log("Collision with book!");
+      }
     }
   }
 
