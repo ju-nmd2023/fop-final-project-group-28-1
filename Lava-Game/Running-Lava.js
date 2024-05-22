@@ -11,12 +11,12 @@ class Button {
     translate(this.x, this.y);
     stroke(0);
     strokeWeight(2);
-    fill(255);
+    fill(0);
     rect(0, 0, this.width, this.height, this.height / 2);
 
     //text
     noStroke();
-    fill(129, 20, 255);
+    fill(223, 61, 40);
     textSize(this.height / 2);
     textAlign(CENTER);
     text(this.text, 0, this.height / 4, this.width);
@@ -33,9 +33,9 @@ class Button {
     );
   }
 }
-let easyButton = new Button(240, 300, 80, 40, "Lv1");
-let mediumButton = new Button(340, 300, 80, 40, "Lv2");
-let hardButton = new Button(440, 300, 80, 40, "Lv3");
+let easyButton = new Button(150, 40, 100, 40, "Level 1");
+let mediumButton = new Button(290, 40, 100, 40, "Level 2");
+let hardButton = new Button(430, 40, 100, 40, "Level 3");
 
 class Debris {
   constructor(x, y) {
@@ -122,6 +122,7 @@ let lifeHearts = [];
 
 function setup() {
   createCanvas(700, 600);
+  frameRate(50);
 
   let width = 700;
   let height = 600;
@@ -411,10 +412,6 @@ function end() {
 
 // start game key pressed
 function keyPressed() {
-  // if (keyCode === 13 && screen === "start") {
-  //   screen = "game";
-  //   gameStarted = true;
-  // }
   if (keyCode === 32 && screen === "result") {
     resetGame();
   }
@@ -444,11 +441,6 @@ function updateCharacter() {
 
     y += gravity;
 
-    // if (onTable) {
-    //   gravity = 0;
-    //   x = +speed;
-    // }
-
     for (let i = 0; i < bigTables.length; i++) {
       let bigTable = bigTables[i];
 
@@ -462,7 +454,6 @@ function updateCharacter() {
         // console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
-        //acceleration = 0;
         y = bigTable.y - 391;
         console.log(y);
         x -= speed;
@@ -486,8 +477,6 @@ function updateCharacter() {
 
         book.x = random(350, 690);
         book.y = -100;
-        // i--;
-        // gravityEnabled = true;
         lifeHearts.pop();
 
         console.log("Collision with book!");
@@ -500,22 +489,6 @@ function updateCharacter() {
       y = -50;
       lifeHearts.pop();
     }
-
-    // if (!onTable) {
-    //   gravityEnabled = true;
-    //   gravity = 15;
-    //   acceleration =
-    //   gravity = gravity + acceleration;
-    //   y += gravity;
-    // }
-    // if (y >= 400) {
-    //   gravity = 0;
-    //   y = 400;
-    // }
-
-    // if (y !== 410 && y + 282 < 410) {
-    //   y += gravity;
-    // }
   }
 }
 
@@ -626,22 +599,6 @@ function gameScreen() {
 }
 
 function resultScreen() {
-  // if (y >= 400) {
-  //   gravity = 0;
-  //   x = 0;
-  //   y = -50;
-  //   y = 300;
-  //   lavaX = 0;
-  //   lifeHearts.pop();
-  //   console.log("crushed");
-  //   console.log(y);
-
-  //   fill(255);
-  //   textSize(40);
-  //   text("You died!", 100, 300);
-  //   text("Please Press Space To Restart", 100, 350);
-  // }
-
   //here so when no health left = crash screen
   if (lifeHearts.length === 0) {
     gravity = 0;
@@ -664,11 +621,6 @@ function resultScreen() {
     console.log("won");
     console.log(y);
     image(imag5, 0, 0, 700, 600);
-
-    // fill(255);
-    // textSize(40);
-    // text("You Won!", 100, 300);
-    // text("Please Press Space To Restart", 100, 350);
   }
 }
 
@@ -711,16 +663,4 @@ function resetGame() {
     bigTables.push(bigTable1);
     bigTables.push(bigTable2);
   }
-  // for (let i = bigTables.length - 1; i >= 0; i--) {
-  //   let bigTable = bigTables[i];
-  //   drawBigTable(bigTable.x, bigTable.y);
-
-  //   bigTable.x -= speed;
-  //   speed += 0.009;
-
-  //   if (bigTable.x + 280 <= 0) {
-  //     bigTable.x = 650;
-  //     bigTable.y = 400;
-  //   }
-  // }
 }
