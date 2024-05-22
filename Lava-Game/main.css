@@ -3,4 +3,17 @@ header {
   text-align: center;
   font-size: 11em;
   transform: scale(1, 0.5);
+  color: white;
+}
+
+body {
+  margin: 0;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  background-image: url("Running-ground.png");
+  background-size: 1500px;
 }

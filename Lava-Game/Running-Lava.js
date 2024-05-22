@@ -418,7 +418,8 @@ function keyPressed() {
 }
 
 function controls() {
-  if (keyIsDown(32) || keyIsDown(38)) {
+  // if (keyIsDown(32) ||
+  if (keyIsDown(38)) {
     y -= 10;
     x += 5;
     gravityEnabled = true;
@@ -426,13 +427,10 @@ function controls() {
     x += 5;
     gravityEnabled = true;
   }
-  if (keyIsDown(37)) {
-    x -= 5;
-    gravityEnabled = true;
-  } else if (keyIsDown(40)) {
-    y += 5;
-    gravityEnabled = true;
-  }
+  // } else if (keyIsDown(37)) {
+  //   x -= 10;
+  //   gravityEnabled = true;
+  // }
 }
 
 function updateCharacter() {
@@ -445,13 +443,13 @@ function updateCharacter() {
       let bigTable = bigTables[i];
 
       let tableCollide =
-        x > bigTable.x &&
+        x + 20 > bigTable.x - 20 &&
         x + 30 < bigTable.x + 250 &&
         y + 391 > bigTable.y &&
         y + 268 < bigTable.y + 70;
 
       if (tableCollide) {
-        // console.log("Collision with table detected!");
+        console.log("Collision with table detected!");
         onTable = true;
         gravity = 0;
         y = bigTable.y - 391;
