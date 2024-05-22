@@ -9,9 +9,9 @@ class Button {
   buttons() {
     push();
     translate(this.x, this.y);
-    stroke(0);
+    noStroke();
     strokeWeight(2);
-    fill(0);
+    fill(255);
     rect(0, 0, this.width, this.height, this.height / 2);
 
     //text
@@ -33,9 +33,9 @@ class Button {
     );
   }
 }
-let easyButton = new Button(150, 40, 100, 40, "Level 1");
-let mediumButton = new Button(290, 40, 100, 40, "Level 2");
-let hardButton = new Button(430, 40, 100, 40, "Level 3");
+let easyButton = new Button(150, 400, 100, 40, "Level 1");
+let mediumButton = new Button(290, 400, 100, 40, "Level 2");
+let hardButton = new Button(430, 400, 100, 40, "Level 3");
 
 class Debris {
   constructor(x, y) {
@@ -658,6 +658,7 @@ function resultScreen() {
     console.log(lifeHearts);
     image(imag4, 0, 0, 700, 600);
   }
+
 
   if (displayFlag === true && timer === 1510) {
     screen = "result";
