@@ -583,7 +583,7 @@ function level3() {
         x + 70 > book.x &&
         x + 70 < book.x + 60 &&
         y + 400 > book.y &&
-        y + 30 < book.y + 30;
+        y + 300 < book.y + 30;
 
       if (bookCollide) {
         //when book collide -1 health heart -----
