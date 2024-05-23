@@ -3,7 +3,7 @@ header {
   text-align: center;
   font-size: 11em;
   transform: scale(1, 0.5);
-  color: white;
+  color: rgb(223, 61, 40);
 }
 
 body {
@@ -14,6 +14,8 @@ body {
   align-items: center;
   flex-direction: column;
 
-  background-image: url("Running-ground.png");
-  background-size: 1500px;
+  background-color: black;
+
+  /* background-image: url("Running-ground.png");
+  background-size: 1500px; */
 }

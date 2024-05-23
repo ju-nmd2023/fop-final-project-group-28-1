@@ -114,8 +114,6 @@ let gravityEnabled = false;
 let speed = 5;
 let displayFlag = false;
 let timer = 0;
-// let flagX = 0;
-// let flagY = 0;
 let onTable = false;
 let books = [];
 let lifeHearts = [];
@@ -345,7 +343,6 @@ function shelf(x, y) {
 
 function lava() {
   let lavaWidth = 740;
-  // let lavaFlows = 2;
 
   for (let i = 0; i < 2; i++) {
     let x = i * lavaWidth - lavaX;
@@ -372,6 +369,7 @@ function lava() {
     pop();
   }
 }
+
 function animateLava() {
   lavaX += 5;
 
@@ -582,10 +580,10 @@ function level3() {
       //make it if (bookCollide)
 
       let bookCollide =
-        x + 51 > book.x &&
-        x + 51 < book.x + 60 &&
-        y + 391 > book.y &&
-        y + 282 < book.y + 30;
+        x + 70 > book.x &&
+        x + 70 < book.x + 60 &&
+        y + 400 > book.y &&
+        y + 30 < book.y + 30;
 
       if (bookCollide) {
         //when book collide -1 health heart -----
@@ -658,7 +656,6 @@ function resultScreen() {
     console.log(lifeHearts);
     image(imag4, 0, 0, 700, 600);
   }
-
 
   if (displayFlag === true && timer === 1510) {
     screen = "result";
