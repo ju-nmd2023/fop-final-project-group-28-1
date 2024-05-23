@@ -89,7 +89,7 @@ class Debris {
   update() {
     this.x -= 5;
 
-    if (this.x <= -200) {
+    if (this.x <= -600) {
       this.x = 700;
       this.x -= 5;
     }
@@ -230,8 +230,6 @@ function drawBigTable(x, y) {
   line(x + 45, y + 25, x + 35, y + 33);
 }
 
-//------------------- TRY!!!!//---------------------
-
 function displayBook(x, y) {
   fill(150, 75, 0);
   rect(x, y, 60, 30, 2);
@@ -240,8 +238,6 @@ function displayBook(x, y) {
   fill(0);
   rect(x, y - 6, 5, 10, 2);
 }
-
-/// READ THIS-------------------------------
 
 function updateBooks() {
   if (book) {
@@ -252,9 +248,8 @@ function updateBooks() {
 
       displayBook(book.x, book.y);
 
-      if (book.y > height) {
+      if (book.y > 600) {
         books.splice(i, 1);
-        i--;
         let x = random(350, 690);
         let y = random(0);
         books.push({ x: x, y: y });
@@ -386,7 +381,6 @@ function startGround() {
   pop();
 }
 
-//smaller
 function character() {
   fill(0, 0, 0);
   //body
@@ -419,7 +413,6 @@ function keyPressed() {
 }
 
 function controls() {
-  // if (keyIsDown(32) ||
   if (keyIsDown(38)) {
     y -= 10;
     x += 5;
@@ -428,10 +421,6 @@ function controls() {
     x += 5;
     gravityEnabled = true;
   }
-  // } else if (keyIsDown(37)) {
-  //   x -= 10;
-  //   gravityEnabled = true;
-  // }
 }
 
 function updateCharacter() {
@@ -454,33 +443,9 @@ function updateCharacter() {
         onTable = true;
         gravity = 0;
         y = bigTable.y - 391;
-        console.log(y);
         x -= speed;
       }
     }
-
-    // when book collide with character
-    // for (let i = 0; i < books.length; i++) {
-    //   let book = books[i];
-
-    //   //make it if (bookCollide)
-
-    //   let bookCollide =
-    //     x + 51 > book.x &&
-    //     x + 51 < book.x + 60 &&
-    //     y + 391 > book.y &&
-    //     y + 282 < book.y + 30;
-
-    //   if (bookCollide) {
-    //     //when book collide -1 health heart -----
-
-    //     book.x = random(350, 690);
-    //     book.y = -100;
-    //     lifeHearts.pop();
-
-    //     console.log("Collision with book!");
-    //   }
-    // }
 
     if (y >= 400) {
       gravity = 0;
@@ -495,7 +460,7 @@ function level1() {
   gameScreen();
   screen = "level1";
 
-  for (let i = bigTables.length - 1; i >= 0; i--) {
+  for (let i = 0; i < bigTables.length; i++) {
     let bigTable = bigTables[i];
     drawBigTable(bigTable.x, bigTable.y);
 
@@ -517,7 +482,7 @@ function level2() {
   screen = "level2";
   book = true;
 
-  for (let i = bigTables.length - 1; i >= 0; i--) {
+  for (let i = 0; i < bigTables.length; i++) {
     let bigTable = bigTables[i];
     drawBigTable(bigTable.x, bigTable.y);
 
@@ -562,7 +527,7 @@ function level3() {
   screen = "level3";
   book = true;
 
-  for (let i = bigTables.length - 1; i >= 0; i--) {
+  for (let i = 0; i < bigTables.length; i++) {
     let bigTable = bigTables[i];
     drawBigTable(bigTable.x, bigTable.y);
 
